@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teaching Companion: Statistical Methods for Engineers (Python/R)</title>
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+<style>
+:root{
+  --se-color:#1a5276;
+  --test-color:#117a65;
+  --sec-color:#922b21;
+  --border:#dee2e6;
+  --text:#212529;
+  --code-bg:#f1f3f5;
+  --code-text:#f8f8f2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#ffffff}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.65;
+  color:var(--text);
+  background:#ffffff;
+  max-width:1150px;
+  margin:0 auto;
+  padding:2rem 1.5rem;
+}
+header{border-bottom:3px solid var(--text);padding-bottom:1.25rem;margin-bottom:1.5rem}
+header h1{font-size:1.8rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.35rem;color:#212529}
+header p{color:#343a40;font-size:0.95rem}
+
+.lang-bar{
+  position:sticky;top:0;z-index:100;
+  background:#ffffff;
+  border-bottom:2px solid var(--border);
+  padding:0.6rem 0;margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.lang-bar label{font-size:0.82rem;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#343a40}
+.toggle-group{display:inline-flex;border:1px solid #adb5bd;border-radius:6px;overflow:hidden;background:#ffffff}
+.toggle-group button{
+  border:none;background:#ffffff;padding:0.35rem 1rem;font-size:0.85rem;font-weight:600;
+  cursor:pointer;color:#343a40;transition:background 0.15s,color 0.15s;
+}
+.toggle-group button.active{background:var(--se-color);color:#ffffff}
+.toggle-group button:not(.active):hover{background:#f1f3f5}
+.lang-hint{font-size:0.78rem;color:#343a40}
+
+.howto{
+  background:#ffffff;
+  border:1px solid var(--border);
+  border-left:4px solid var(--se-color);
+  padding:0.9rem 1.2rem;margin-bottom:2rem;
+  font-size:0.9rem;border-radius:0 4px 4px 0;color:#212529;
+}
+.area-section{margin-bottom:3rem}
+.area-header{
+  display:flex;align-items:center;gap:0.75rem;
+  margin-bottom:1.25rem;padding-bottom:0.5rem;
+  border-bottom:2px solid var(--border);
+}
+.area-header h2{font-size:1.35rem;font-weight:650;color:#212529}
+.badge{
+  display:inline-block;padding:0.2rem 0.7rem;border-radius:4px;font-size:0.72rem;
+  font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#ffffff;
+}
+.badge-se{background:var(--se-color)}
+.badge-test{background:var(--test-color)}
+.badge-sec{background:var(--sec-color)}
+
+.lesson{border:1px solid var(--border);border-radius:8px;margin-bottom:1.75rem;overflow:hidden;background:#ffffff}
+.lesson-title{padding:0.7rem 1.2rem;font-weight:650;font-size:1rem;background:#f1f3f5;border-bottom:1px solid var(--border);color:#212529}
+.lesson-body{padding:1.1rem 1.2rem;background:#ffffff}
+.step{margin-bottom:0.9rem}
+.step-label{
+  display:inline-block;font-size:0.72rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:0.06em;color:#ffffff;padding:0.1rem 0.5rem;border-radius:3px;margin-bottom:0.25rem;
+}
+.step-label.data{background:#495057}
+.step-label.compute{background:#1a5276}
+.step-label.result{background:#117a65}
+.step-label.interpret{background:#922b21}
+
+table.data-table{
+  border-collapse:collapse;font-size:0.83rem;margin:0.5rem 0;
+  font-family:"SF Mono",Consolas,monospace;background:#ffffff;
+}
+table.data-table th,table.data-table td{border:1px solid var(--border);padding:0.3rem 0.65rem;text-align:right}
+table.data-table th{background:#343a40;color:#ffffff;text-align:center;font-weight:600}
+table.data-table tr:nth-child(even){background:#ffffff}
+
+.code-wrap{position:relative;margin:0.5rem 0}
+.code-wrap pre{
+  background:var(--code-bg);color:var(--code-text);
+  padding:0.8rem 1rem;padding-right:8.2rem;
+  border-radius:5px;overflow-x:auto;font-size:0.8rem;line-height:1.5;margin:0;
+  font-family:"SF Mono",Consolas,monospace;
+}
+.code-actions{position:absolute;top:0.45rem;right:0.45rem;display:flex;gap:0.3rem}
+.code-actions button{
+  background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.22);
+  color:#ffffff;border-radius:4px;height:28px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.72rem;font-weight:700;letter-spacing:0.03em;padding:0 0.55rem;
+  transition:background 0.15s;font-family:inherit;
+}
+.code-actions button:hover{background:rgba(255,255,255,0.22)}
+.code-actions button.copy-btn{width:28px;padding:0}
+.code-actions button.copied{background:#117a65;border-color:#117a65;color:#ffffff}
+.code-actions button svg{width:15px;height:15px;pointer-events:none}
+
+body.lang-python .lang-r{display:none}
+body.lang-r .lang-python{display:none}
+
+#toast{
+  position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%) translateY(120%);
+  background:#212529;color:#ffffff;padding:0.65rem 1.1rem;border-radius:6px;font-size:0.85rem;
+  box-shadow:0 6px 24px rgba(0,0,0,0.22);transition:transform 0.25s ease;z-index:2000;
+  max-width:calc(100vw - 2rem);text-align:center;
+}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+.result-box{
+  background:#ffffff;border:1px solid var(--border);border-left:4px solid #117a65;
+  padding:0.6rem 0.9rem;border-radius:4px;font-size:0.9rem;margin:0.5rem 0;color:#212529;
+}
+.interpret-box{
+  background:#ffffff;border:1px solid var(--border);border-left:4px solid var(--sec-color);
+  padding:0.65rem 0.9rem;font-size:0.9rem;margin-top:0.5rem;border-radius:0 4px 4px 0;color:#212529;
+}
+
+.ref{
+  display:inline;color:#0b5ed7;border-bottom:1px dotted #0b5ed7;cursor:help;
+  text-decoration:none;font-weight:500;
+}
+.ref:hover{background:#e7f1ff}
+
+#ref-popup{
+  position:absolute;z-index:1000;max-width:440px;background:#ffffff;border:1px solid #adb5bd;
+  border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,0.18);font-size:0.85rem;line-height:1.55;
+  color:#212529;padding:0.9rem 1rem;display:none;
+}
+#ref-popup.visible{display:block}
+#ref-popup .ref-title{font-weight:700;font-size:0.95rem;margin-bottom:0.15rem;padding-right:1.5rem;color:#212529}
+#ref-popup .ref-meta{
+  font-size:0.72rem;color:#495057;margin-bottom:0.5rem;text-transform:uppercase;
+  letter-spacing:0.05em;font-weight:600;
+}
+#ref-popup .ref-body{color:#212529}
+#ref-popup .ref-link{
+  display:inline-block;margin-top:0.5rem;font-size:0.8rem;color:#0b5ed7;text-decoration:none;font-weight:600;
+}
+#ref-popup .ref-link:hover{text-decoration:underline}
+#ref-popup .ref-close{
+  position:absolute;top:0.4rem;right:0.5rem;background:none;border:none;
+  font-size:1.1rem;line-height:1;color:#495057;cursor:pointer;padding:0.1rem 0.3rem;
+}
+#ref-popup .ref-close:hover{color:#212529}
+
+footer{
+  margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);
+  font-size:0.82rem;color:#343a40;
+}
+@media (max-width:700px){
+  .code-wrap pre{font-size:0.72rem;padding-right:8.2rem}
+  #ref-popup{max-width:calc(100vw - 2rem)}
+}
+</style>
+</head>
+<body class="lang-python">
+
+<header>
+<h1>Statistical Methods for Engineers: Worked Teaching Examples</h1>
+<p>Python/R toggle, copy/run/report actions, clickable variable popups, and LaTeX-rendered math. Every underlined variable has a definition, unit, and background.</p>
+</header>
+
+<div class="lang-bar">
+<label>Code language</label>
+<div class="toggle-group" role="group" aria-label="Programming language">
+<button type="button" data-lang="python" class="active">Python</button>
+<button type="button" data-lang="r">R</button>
+</div>
+<span class="lang-hint">Copy copies. ▶ Run opens <a href="https://www.mycompiler.io/" target="_blank" rel="noopener">mycompiler.io</a>. 📄 Report copies a lesson-specific <code>.Rmd</code> and opens <a href="https://posit.cloud/" target="_blank" rel="noopener">Posit Cloud</a>.</span>
+</div>
+
+<div class="howto">
+<strong>How to use this document.</strong> Each lesson follows <em>context → data → computation → result → domain interpretation</em>. Use the toggle to switch languages. <strong>Underlined variables</strong> open a popup with definition, unit, and background. Math symbols are rendered with MathJax from LaTeX source. All datasets are synthetic.
+</div>
+
+<!-- ============================================================ -->
+<!-- SOFTWARE ENGINEERING -->
+<!-- ============================================================ -->
+<section class="area-section">
+<div class="area-header">
+<span class="badge badge-se">Software Engineering</span>
+<h2>Prediction & Regression</h2>
+</div>
+
+<!-- LESSON 1 -->
+<div class="lesson" data-lesson="1">
+<div class="lesson-title">Lesson 1 — Simple Linear Regression: Predicting Test Effort from Module Size</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>A QA team wants to predict test hours from module size. This is the core of effort-estimation models (see <span class="ref" data-ref="cases1to5">Cases 1–5</span>).</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data (12 past modules)</span>
+<table class="data-table">
+<tr><th>Module</th><th><span class="ref" data-ref="v_kloc">KLOC ($x$)</span></th><th><span class="ref" data-ref="v_test_hours">Test hours ($y$)</span></th></tr>
+<tr><td>M1</td><td>2</td><td>5</td></tr>
+<tr><td>M2</td><td>3</td><td>7</td></tr>
+<tr><td>M3</td><td>5</td><td>9</td></tr>
+<tr><td>M4</td><td>7</td><td>11</td></tr>
+<tr><td>M5</td><td>8</td><td>14</td></tr>
+<tr><td>M6</td><td>10</td><td>15</td></tr>
+<tr><td>M7</td><td>12</td><td>18</td></tr>
+<tr><td>M8</td><td>14</td><td>19</td></tr>
+<tr><td>M9</td><td>15</td><td>22</td></tr>
+<tr><td>M10</td><td>18</td><td>24</td></tr>
+<tr><td>M11</td><td>20</td><td>27</td></tr>
+<tr><td>M12</td><td>22</td><td>28</td></tr>
+</table>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<div class="code-wrap lang-python">
+<pre>import numpy as np
+
+x = np.array([2,3,5,7,8,10,12,14,15,18,20,22])
+y = np.array([5,7,9,11,14,15,18,19,22,24,27,28])
+
+b1, b0 = np.polyfit(x, y, 1)
+print(f"slope b1 = {b1:.3f}, intercept b0 = {b0:.3f}")
+
+r = np.corrcoef(x, y)[0, 1]
+print(f"r = {r:.3f}, R^2 = {r**2:.3f}")
+
+print("Prediction for 10 KLOC:", b0 + b1 * 10)</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>x &lt;- c(2,3,5,7,8,10,12,14,15,18,20,22)
+y &lt;- c(5,7,9,11,14,15,18,19,22,24,27,28)
+
+fit &lt;- lm(y ~ x)
+coef(fit)
+summary(fit)$r.squared
+cor(x, y)
+
+predict(fit, newdata = data.frame(x = 10))</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+The fitted line is $\hat{y} = b_0 + b_1 x = 2.51 + 1.18\,x$, with $r^2 = 0.988$ and $r = 0.994$. A 10-KLOC module is predicted to need $\approx 14.3$ test hours.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+The slope $b_1 = 1.18$ is the marginal cost: each additional <span class="ref" data-ref="v_kloc">KLOC</span> adds about $1.2$ test hours. The intercept $b_0 = 2.51$ is fixed setup overhead, not a literal zero-module cost. $r^2 = 0.988$ is high because the data are synthetic; real <span class="ref" data-ref="isbsg">ISBSG</span> / <span class="ref" data-ref="cocomo">COCOMO</span> data give $r^2 \in [0.3, 0.7]$.
+</div>
+</div>
+</div>
+</div>
+
+<!-- LESSON 2 -->
+<div class="lesson" data-lesson="2">
+<div class="lesson-title">Lesson 2 — Multiple Regression: Award-Fee Prediction</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>Mirrors the <span class="ref" data-ref="seiCase10">SEI case study (Case 10)</span>: predict a contractor's award fee from monthly process indicators.</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data (10 projects)</span>
+<table class="data-table">
+<tr><th>Project</th><th><span class="ref" data-ref="v_erb">ERB % ($x_1$)</span></th><th><span class="ref" data-ref="v_closure">Closure % ($x_2$)</span></th><th><span class="ref" data-ref="v_fee">Fee (\$K, $y$)</span></th></tr>
+<tr><td>P1</td><td>80</td><td>70</td><td>120</td></tr>
+<tr><td>P2</td><td>85</td><td>75</td><td>135</td></tr>
+<tr><td>P3</td><td>90</td><td>80</td><td>150</td></tr>
+<tr><td>P4</td><td>75</td><td>65</td><td>105</td></tr>
+<tr><td>P5</td><td>95</td><td>88</td><td>170</td></tr>
+<tr><td>P6</td><td>88</td><td>78</td><td>145</td></tr>
+<tr><td>P7</td><td>82</td><td>72</td><td>128</td></tr>
+<tr><td>P8</td><td>70</td><td>60</td><td>95</td></tr>
+<tr><td>P9</td><td>92</td><td>85</td><td>160</td></tr>
+<tr><td>P10</td><td>86</td><td>77</td><td>140</td></tr>
+</table>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<div class="code-wrap lang-python">
+<pre>import numpy as np
+import statsmodels.api as sm
+
+x1 = np.array([80,85,90,75,95,88,82,70,92,86])
+x2 = np.array([70,75,80,65,88,78,72,60,85,77])
+y  = np.array([120,135,150,105,170,145,128,95,160,140])
+
+X = sm.add_constant(np.column_stack([x1, x2]))
+model = sm.OLS(y, X).fit()
+print(model.summary())
+
+print("Prediction:", model.predict([[1, 85, 75]]))
+print("Correlation:", np.corrcoef(x1, x2)[0, 1])</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>x1 &lt;- c(80,85,90,75,95,88,82,70,92,86)
+x2 &lt;- c(70,75,80,65,88,78,72,60,85,77)
+y  &lt;- c(120,135,150,105,170,145,128,95,160,140)
+
+fit &lt;- lm(y ~ x1 + x2)
+summary(fit)
+confint(fit)
+
+predict(fit, newdata = data.frame(x1 = 85, x2 = 75),
+        interval = "confidence")
+cor(x1, x2)</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+$\hat{y} = -64.2 + 1.85\,x_1 + 1.42\,x_2$, with $R^2 = 0.995$. Both predictors significant at $\alpha = 0.05$.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+Coefficients are <em>partial</em> effects: $\partial y / \partial x_1 = 1.85$ holding $x_2$ constant. The negative intercept is an extrapolation artifact. In the real <span class="ref" data-ref="seiCase10">SEI study</span>, <span class="ref" data-ref="v_cost_variance">cost variance</span> was dropped for collinearity.
+</div>
+</div>
+</div>
+</div>
+
+<!-- LESSON 3 -->
+<div class="lesson" data-lesson="3">
+<div class="lesson-title">Lesson 3 — Correlation and Feature Selection</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>Mirrors <span class="ref" data-ref="idsFeatureSelection">Case 18</span>. Screen candidate predictors with Pearson and Spearman correlations.</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data (8 modules)</span>
+<table class="data-table">
+<tr><th>Module</th><th><span class="ref" data-ref="v_complexity">Complexity</span></th><th><span class="ref" data-ref="v_kloc">KLOC</span></th><th><span class="ref" data-ref="v_comment">Comments %</span></th><th><span class="ref" data-ref="v_defects">Defects</span></th></tr>
+<tr><td>A</td><td>12</td><td>3</td><td>18</td><td>2</td></tr>
+<tr><td>B</td><td>20</td><td>6</td><td>10</td><td>5</td></tr>
+<tr><td>C</td><td>8</td><td>2</td><td>25</td><td>1</td></tr>
+<tr><td>D</td><td>30</td><td>9</td><td>8</td><td>8</td></tr>
+<tr><td>E</td><td>18</td><td>5</td><td>14</td><td>4</td></tr>
+<tr><td>F</td><td>25</td><td>8</td><td>6</td><td>7</td></tr>
+<tr><td>G</td><td>10</td><td>2.5</td><td>22</td><td>2</td></tr>
+<tr><td>H</td><td>35</td><td>10</td><td>5</td><td>10</td></tr>
+</table>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<div class="code-wrap lang-python">
+<pre>from scipy.stats import pearsonr, spearmanr
+
+complexity = [12,20,8,30,18,25,10,35]
+kloc       = [3,6,2,9,5,8,2.5,10]
+comment    = [18,10,25,8,14,6,22,5]
+defects    = [2,5,1,8,4,7,2,10]
+
+for name, feat in [("complexity", complexity),
+                   ("KLOC", kloc),
+                   ("comment_density", comment)]:
+    r, p   = pearsonr(feat, defects)
+    rs, ps = spearmanr(feat, defects)
+    print(f"{name:18s} Pearson r={r:.3f} (p={p:.4f})  Spearman rho={rs:.3f}")</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>complexity &lt;- c(12,20,8,30,18,25,10,35)
+kloc       &lt;- c(3,6,2,9,5,8,2.5,10)
+comment    &lt;- c(18,10,25,8,14,6,22,5)
+defects    &lt;- c(2,5,1,8,4,7,2,10)
+
+for (nm in c("complexity","kloc","comment")) {
+  feat &lt;- get(nm)
+  cat(sprintf("%-12s Pearson r=%.3f  Spearman rho=%.3f\n",
+              nm,
+              cor(feat, defects, method="pearson"),
+              cor(feat, defects, method="spearman")))
+}
+
+df &lt;- data.frame(complexity, kloc, comment, defects)
+pairs(df, pch = 19, col = "steelblue")</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+<span class="ref" data-ref="v_complexity">Complexity</span> and <span class="ref" data-ref="v_kloc">KLOC</span> are strongly <strong>positive</strong>; <span class="ref" data-ref="v_comment">comment density</span> is strongly <strong>negative</strong>. All $p < 0.001$.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+Correlation is not causation. Pearson measures linear association $\rho_P$; Spearman measures monotone association $\rho_S$. Use correlation to <em>screen</em>, then confirm with regression or <span class="ref" data-ref="idsFeatureSelection">Case 18</span>-style feature selection.
+</div>
+</div>
+</div>
+</div>
+
+<!-- LESSON 4 -->
+<div class="lesson" data-lesson="4">
+<div class="lesson-title">Lesson 4 — Two-Sample t-Test</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>Before/after <span class="ref" data-ref="v_defect_density">defect density</span> comparison — the basis for process A/B testing.</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data (defects per KLOC)</span>
+<table class="data-table">
+<tr><th><span class="ref" data-ref="v_old_process">Old ($n=8$)</span></th><td>4.2</td><td>5.1</td><td>3.8</td><td>4.9</td><td>5.5</td><td>4.1</td><td>4.7</td><td>5.0</td></tr>
+<tr><th><span class="ref" data-ref="v_new_process">New ($n=8$)</span></th><td>3.1</td><td>3.5</td><td>2.9</td><td>3.8</td><td>3.2</td><td>2.7</td><td>3.6</td><td>3.0</td></tr>
+</table>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<div class="code-wrap lang-python">
+<pre>from scipy.stats import ttest_ind
+import numpy as np
+
+old = [4.2,5.1,3.8,4.9,5.5,4.1,4.7,5.0]
+new = [3.1,3.5,2.9,3.8,3.2,2.7,3.6,3.0]
+
+t, p = ttest_ind(old, new, equal_var=False)
+print(f"t = {t:.3f}, p = {p:.5f}")
+
+diff = np.mean(old) - np.mean(new)
+se   = np.sqrt(np.var(old, ddof=1)/8 + np.var(new, ddof=1)/8)
+print(f"mean diff = {diff:.2f}, 95% CI = ({diff-2.16*se:.2f}, {diff+2.16*se:.2f})")</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>old &lt;- c(4.2,5.1,3.8,4.9,5.5,4.1,4.7,5.0)
+new &lt;- c(3.1,3.5,2.9,3.8,3.2,2.7,3.6,3.0)
+
+t.test(old, new, var.equal = FALSE)
+
+boxplot(list(old = old, new = new),
+        col = c("lightgray", "lightblue"),
+        ylab = "Defects per KLOC")</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+$t = 7.34$, $p \approx 4 \times 10^{-6}$. Mean difference $\bar{x}_{\text{old}} - \bar{x}_{\text{new}} = 1.46$ defects/KLOC, 95% CI $(1.03,\, 1.90)$.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+The <span class="ref" data-ref="v_new_process">new process</span> is associated with about $1.5$ fewer <span class="ref" data-ref="v_defect_density">defects/KLOC</span>. Welch's test is safer than Student's when variances differ (see <span class="ref" data-ref="welch">Welch 1947</span>). Not a randomized experiment.
+</div>
+</div>
+</div>
+</div>
+
+<!-- LESSON 5 -->
+<div class="lesson" data-lesson="5">
+<div class="lesson-title">Lesson 5 — Confidence Intervals for Mean Fix Time</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>Estimating mean time-to-fix. See <span class="ref" data-ref="studentT">Student (1908)</span>.</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data (<span class="ref" data-ref="v_fix_time">fix time</span> in hours, $n = 15$)</span>
+<p style="font-family:monospace;font-size:0.85rem;">6.2, 7.8, 5.5, 8.1, 9.0, 6.9, 7.2, 8.5, 6.0, 7.7, 8.9, 5.8, 7.4, 8.2, 6.6</p>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<div class="code-wrap lang-python">
+<pre>import numpy as np
+from scipy import stats
+
+data = [6.2,7.8,5.5,8.1,9.0,6.9,7.2,8.5,6.0,7.7,8.9,5.8,7.4,8.2,6.6]
+n, xbar = len(data), np.mean(data)
+s  = np.std(data, ddof=1)
+se = s / np.sqrt(n)
+tcrit = stats.t.ppf(0.975, df=n-1)
+print(f"mean = {xbar:.2f}, s = {s:.2f}, SE = {se:.3f}")
+print(f"95% CI = ({xbar - tcrit*se:.2f}, {xbar + tcrit*se:.2f})")</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>data &lt;- c(6.2,7.8,5.5,8.1,9.0,6.9,7.2,8.5,6.0,7.7,8.9,5.8,7.4,8.2,6.6)
+
+mean(data); sd(data)
+t.test(data)$conf.int
+
+hist(data, breaks = 6, col = "lightblue",
+     xlab = "Fix time (hours)", main = "Distribution of fix times")</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+Mean <span class="ref" data-ref="v_fix_time">fix time</span> $\bar{x} = 7.25$ h. 95% CI $= (6.61,\, 7.89)$ h, computed as $\bar{x} \pm t_{0.975,n-1} \cdot s / \sqrt{n}$.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+The CI is a range for the true mean $\mu$, not individual fix times. If the <span class="ref" data-ref="v_sla">SLA</span> is "average under 8 hours," the upper bound $7.89$ is barely compliant. Width shrinks as $1/\sqrt{n}$; halving it needs four times the data.
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SOFTWARE TESTING & RELIABILITY -->
+<!-- ============================================================ -->
+<section class="area-section">
+<div class="area-header">
+<span class="badge badge-test">Software Testing & Reliability</span>
+<h2>Reliability Growth & Test Design</h2>
+</div>
+
+<!-- LESSON 6 -->
+<div class="lesson" data-lesson="6">
+<div class="lesson-title">Lesson 6 — The Laplace Test</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>Mirrors <span class="ref" data-ref="laplaceCase">Case 11</span>. Test whether failure arrivals show a trend.</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data (<span class="ref" data-ref="v_failure_time">failure times</span>)</span>
+<table class="data-table">
+<tr><th><span class="ref" data-ref="v_system_a">System A</span></th><td>5</td><td>12</td><td>18</td><td>30</td><td>45</td><td>62</td><td>85</td><td>110</td><td>150</td><td>200</td></tr>
+<tr><th><span class="ref" data-ref="v_system_b">System B</span></th><td>5</td><td>8</td><td>12</td><td>15</td><td>18</td><td>22</td><td>25</td><td>28</td><td>32</td><td>35</td></tr>
+</table>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<p>Laplace statistic: $$U = \frac{\bar{t} - T/2}{T \sqrt{1/(12n)}}$$ — see <span class="ref" data-ref="laplaceRef">Laplace (1820)</span>.</p>
+<div class="code-wrap lang-python">
+<pre>import numpy as np
+
+def laplace(times, T):
+    times = np.asarray(times)
+    n = len(times)
+    return (times.mean() - T/2) / (T * np.sqrt(1/(12*n)))
+
+A = [5,12,18,30,45,62,85,110,150,200]
+B = [5,8,12,15,18,22,25,28,32,35]
+print(f"System A: U = {laplace(A, 200):.3f}")
+print(f"System B: U = {laplace(B,  35):.3f}")</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>laplace &lt;- function(times, T) {
+  n &lt;- length(times)
+  (mean(times) - T/2) / (T * sqrt(1/(12*n)))
+}
+
+A &lt;- c(5,12,18,30,45,62,85,110,150,200)
+B &lt;- c(5,8,12,15,18,22,25,28,32,35)
+cat("System A: U =", round(laplace(A, 200), 3), "\n")
+cat("System B: U =", round(laplace(B,  35), 3), "\n")</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+<span class="ref" data-ref="v_system_a">System A</span>: $U = -1.89$, within $[-2, +2]$ → stable growth. <span class="ref" data-ref="v_system_b">System B</span>: $U = +1.72$ → failure rate increasing.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+$U < 0$ means failures arrive later than expected (improvement). $U > 0$ means deterioration. $|U| > 2$ flags instability — <span class="ref" data-ref="laplaceCase">Case 11</span> found 5 such datasets.
+</div>
+</div>
+</div>
+</div>
+
+<!-- LESSON 7 -->
+<div class="lesson" data-lesson="7">
+<div class="lesson-title">Lesson 7 — Goel–Okumoto Reliability-Growth Model</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>Mirrors <span class="ref" data-ref="goCase13">Case 13</span>. Predict <em>total</em> defects from cumulative observations.</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data (<span class="ref" data-ref="v_cumulative">cumulative defects by week</span>)</span>
+<table class="data-table">
+<tr><th>Week $t$</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
+<tr><th>$m(t)$</th><td>4</td><td>11</td><td>22</td><td>35</td><td>48</td><td>60</td><td>70</td><td>78</td></tr>
+</table>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<p>Model: $$m(t) = a\left(1 - e^{-b t}\right)$$ — <span class="ref" data-ref="goelOkumoto">Goel &amp; Okumoto (1979)</span>.</p>
+<div class="code-wrap lang-python">
+<pre>import numpy as np
+from scipy.optimize import curve_fit
+
+t = np.array([1,2,3,4,5,6,7,8])
+m = np.array([4,11,22,35,48,60,70,78])
+
+def go(t, a, b):
+    return a * (1 - np.exp(-b * t))
+
+popt, pcov = curve_fit(go, t, m, p0=[100, 0.3])
+a, b = popt
+perr = np.sqrt(np.diag(pcov))
+print(f"a = {a:.1f} +/- {perr[0]:.1f}")
+print(f"b = {b:.3f} +/- {perr[1]:.3f}")</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>t &lt;- 1:8
+m &lt;- c(4,11,22,35,48,60,70,78)
+
+fit &lt;- nls(m ~ a * (1 - exp(-b * t)),
+           start = list(a = 100, b = 0.3))
+summary(fit)$coefficients
+
+a_hat &lt;- coef(fit)["a"]; b_hat &lt;- coef(fit)["b"]
+curve_t &lt;- seq(1, 8, length.out = 100)
+plot(t, m, pch = 19, col = "steelblue",
+     xlab = "Week", ylab = "Cumulative defects")
+lines(curve_t, a_hat * (1 - exp(-b_hat * curve_t)),
+      col = "firebrick", lwd = 2)</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+$\hat{a} \approx 100.6$ (95% CI roughly 87–114), $\hat{b} \approx 0.32$ per week.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+$a$ is the expected total defect count; it drives the release decision. $b$ is the per-fault detection rate; it tells how fast testing converges. If the data are S-shaped rather than concave, the exponential form under-predicts.
+</div>
+</div>
+</div>
+</div>
+
+<!-- LESSON 8 -->
+<div class="lesson" data-lesson="8">
+<div class="lesson-title">Lesson 8 — Binomial Confidence and the Rule of Three</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>Mirrors <span class="ref" data-ref="coverageCase16">Case 16</span>. How many failure-free trials are enough?</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data / Scenario</span>
+<p>$n = 30$ operational test cases, all 30 pass (0 failures).</p>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<p>Rule of three: $\hat{p}_{\text{upper}} \approx 3/n$ — <span class="ref" data-ref="ruleOfThree">Hanley &amp; Lippman-Hand (1983)</span>.</p>
+<div class="code-wrap lang-python">
+<pre>from scipy.stats import beta
+
+n = 30
+print(f"Exact 95% upper bound: {beta.ppf(0.95, 1, n):.4f}")
+print(f"Rule of three: 3/{n} = {3/n:.4f}")
+
+for k in [10, 30, 100, 300, 1000]:
+    print(f"n={k:4d}  upper ≈ {beta.ppf(0.95, 1, k):.4f}")</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>n &lt;- 30
+qbeta(0.95, 1, n)
+3/n
+
+n_grid &lt;- c(10, 30, 100, 300, 1000)
+data.frame(n = n_grid,
+           exact = qbeta(0.95, 1, n_grid),
+           rule_of_three = 3 / n_grid)</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+With 0 failures in 30 trials, the 95% upper bound on failure probability is $\approx 9.5\%$.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+30 passing tests rules out only rates above $\approx 10\%$. To certify below $1\%$, need $n \approx 300$ ($3/p$). Certification confidence is expensive and grows linearly in $1/p$.
+</div>
+</div>
+</div>
+</div>
+
+<!-- LESSON 9 -->
+<div class="lesson" data-lesson="9">
+<div class="lesson-title">Lesson 9 — Bayesian Updating</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>Mirrors <span class="ref" data-ref="bayesCase12">Case 12</span>: Bayesian estimation stays stable when data are scarce.</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data / Prior</span>
+<p>Prior: $p \sim \mathrm{Beta}(2, 18)$, prior mean $= 0.10$. Test: 40 trials, 3 failures.</p>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<div class="code-wrap lang-python">
+<pre>from scipy.stats import beta
+
+a0, b0 = 2, 18
+fails, passes = 3, 37
+
+a1, b1 = a0 + fails, b0 + passes
+print(f"Prior mean     = {a0/(a0+b0):.3f}")
+print(f"Posterior mean = {a1/(a1+b1):.3f}")
+lo, hi = beta.ppf([0.025, 0.975], a1, b1)
+print(f"95% credible interval = ({lo:.3f}, {hi:.3f})")
+print(f"MLE p = {fails/(fails+passes):.3f}")</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>a0 &lt;- 2; b0 &lt;- 18
+fails &lt;- 3; passes &lt;- 37
+
+a1 &lt;- a0 + fails; b1 &lt;- b0 + passes
+a0/(a0+b0)
+a1/(a1+b1)
+qbeta(c(0.025, 0.975), a1, b1)
+fails/(fails+passes)
+
+p &lt;- seq(0, 0.4, length.out = 200)
+plot(p, dbeta(p, a0, b0), type = "l", lwd = 2, col = "steelblue",
+     xlab = "p", ylab = "Density", main = "Prior vs posterior")
+lines(p, dbeta(p, a1, b1), lwd = 2, col = "firebrick")</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+Posterior: $p \mid \text{data} \sim \mathrm{Beta}(5, 55)$, posterior mean $\mathbb{E}[p \mid \text{data}] = 0.088$, 95% credible interval $(0.031,\, 0.165)$.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+A 95% credible interval means $\Pr(p \in [0.031, 0.165] \mid \text{data}) = 0.95$ — a direct probability statement, unlike a frequentist confidence interval.
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CYBERSECURITY -->
+<!-- ============================================================ -->
+<section class="area-section">
+<div class="area-header">
+<span class="badge badge-sec">Cybersecurity</span>
+<h2>Anomaly Detection & Classification</h2>
+</div>
+
+<!-- LESSON 10 -->
+<div class="lesson" data-lesson="10">
+<div class="lesson-title">Lesson 10 — Z-Score and IQR Outlier Detection</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>Mirrors <span class="ref" data-ref="rfCase17">Case 17</span>.</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data (<span class="ref" data-ref="v_pps">packets/s</span>, 15 windows)</span>
+<table class="data-table">
+<tr><th>Window</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td></tr>
+<tr><th>Packets/s</th><td>120</td><td>135</td><td>128</td><td>142</td><td>118</td><td>131</td><td>125</td><td>139</td><td>122</td><td>133</td><td>129</td><td>141</td><td>127</td><td>136</td><td>980</td></tr>
+</table>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<div class="code-wrap lang-python">
+<pre>import numpy as np
+
+x = np.array([120,135,128,142,118,131,125,139,122,133,129,141,127,136,980])
+mu, sd = x.mean(), x.std(ddof=1)
+print("z-scores:", np.round((x - mu) / sd, 2))
+
+q1, q3 = np.percentile(x, [25, 75])
+iqr = q3 - q1
+print(f"IQR = {iqr:.1f}, upper fence = {q3 + 1.5*iqr:.1f}")</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>x &lt;- c(120,135,128,142,118,131,125,139,122,133,129,141,127,136,980)
+
+round((x - mean(x)) / sd(x), 2)
+
+q &lt;- quantile(x, c(0.25, 0.75))
+iqr &lt;- q[2] - q[1]
+c(IQR = iqr, upper_fence = q[2] + 1.5 * iqr)
+
+boxplot(x, col = "lightblue", ylab = "Packets per second")</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+For window 15: $\;z = (x - \bar{x})/s \approx 3.86$. IQR upper fence $= Q_3 + 1.5 \cdot \mathrm{IQR} = 159.75$. Both methods flag the window.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+The z-score assumes normality and is inflated by the outlier itself. $\mathrm{IQR} = Q_3 - Q_1$ is robust (<span class="ref" data-ref="tukeyIQR">Tukey 1977</span>). Use a known-clean baseline in production.
+</div>
+</div>
+</div>
+</div>
+
+<!-- LESSON 11 -->
+<div class="lesson" data-lesson="11">
+<div class="lesson-title">Lesson 11 — Confusion Matrix and Classification Metrics</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>Mirrors <span class="ref" data-ref="idsCasesAll">Cases 17–20</span>: accuracy misleads under imbalance.</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data (confusion matrix, $n = 1000$ flows)</span>
+<table class="data-table">
+<tr><th></th><th><span class="ref" data-ref="v_pred_attack">Pred attack</span></th><th><span class="ref" data-ref="v_pred_normal">Pred normal</span></th></tr>
+<tr><th><span class="ref" data-ref="v_actual_attack">Actual attack (40)</span></th><td>35 (<span class="ref" data-ref="v_tp">TP</span>)</td><td>5 (<span class="ref" data-ref="v_fn">FN</span>)</td></tr>
+<tr><th><span class="ref" data-ref="v_actual_normal">Actual normal (960)</span></th><td>45 (<span class="ref" data-ref="v_fp">FP</span>)</td><td>915 (<span class="ref" data-ref="v_tn">TN</span>)</td></tr>
+</table>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<div class="code-wrap lang-python">
+<pre>TP, FN, FP, TN = 35, 5, 45, 915
+accuracy  = (TP+TN)/(TP+TN+FP+FN)
+precision = TP/(TP+FP)
+recall    = TP/(TP+FN)
+f1        = 2*precision*recall/(precision+recall)
+print(f"Accuracy  = {accuracy:.3f}")
+print(f"Precision = {precision:.3f}")
+print(f"Recall    = {recall:.3f}")
+print(f"F1        = {f1:.3f}")
+baseline = (FN + TN) / (TP + FN + FP + TN)
+print(f"Always-normal baseline = {baseline:.3f}")</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>TP &lt;- 35; FN &lt;- 5; FP &lt;- 45; TN &lt;- 915
+
+accuracy  &lt;- (TP+TN)/(TP+TN+FP+FN)
+precision &lt;- TP/(TP+FP)
+recall    &lt;- TP/(TP+FN)
+f1        &lt;- 2*precision*recall/(precision+recall)
+
+sprintf("Accuracy  = %.3f", accuracy)
+sprintf("Precision = %.3f", precision)
+sprintf("Recall    = %.3f", recall)
+sprintf("F1        = %.3f", f1)
+
+baseline &lt;- (FN + TN) / (TP + FN + FP + TN)
+sprintf("Always-normal baseline = %.3f", baseline)</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+$$\text{Accuracy} = \frac{TP+TN}{N} = 0.950, \quad \text{Precision} = \frac{TP}{TP+FP} = 0.438,$$
+$$\text{Recall} = \frac{TP}{TP+FN} = 0.875, \quad F_1 = \frac{2PR}{P+R} = 0.583.$$
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+44% <span class="ref" data-ref="v_precision">precision</span> means most alerts are false alarms. A classifier that always predicts "normal" reaches $0.960$ accuracy with $\text{recall} = 0$ (<span class="ref" data-ref="sokolovaMetrics">Sokolova &amp; Lapalme 2009</span>).
+</div>
+</div>
+</div>
+</div>
+
+<!-- LESSON 12 -->
+<div class="lesson" data-lesson="12">
+<div class="lesson-title">Lesson 12 — Shannon Entropy</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>Mirrors <span class="ref" data-ref="slowlorisCase20">Case 20</span> (SlowLoris).</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data (<span class="ref" data-ref="v_http_counts">HTTP method counts</span>)</span>
+<table class="data-table">
+<tr><th>Normal</th><th>GET</th><th>POST</th><th>PUT</th><th>DELETE</th><th>HEAD</th><th>OPTIONS</th></tr>
+<tr><td>counts</td><td>50</td><td>25</td><td>10</td><td>5</td><td>8</td><td>2</td></tr>
+<tr><th>SlowLoris</th><th>GET</th><th>POST</th><th>PUT</th><th>DELETE</th><th>HEAD</th><th>OPTIONS</th></tr>
+<tr><td>counts</td><td>95</td><td>2</td><td>1</td><td>0</td><td>2</td><td>0</td></tr>
+</table>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<p>$$H = -\sum_i p_i \log_2 p_i \quad \text{(bits)}$$ — <span class="ref" data-ref="shannon1948">Shannon (1948)</span>.</p>
+<div class="code-wrap lang-python">
+<pre>import numpy as np
+
+def entropy(counts):
+    p = np.array(counts, dtype=float)
+    p = p[p > 0]
+    p = p / p.sum()
+    return -(p * np.log2(p)).sum()
+
+normal    = [50,25,10,5,8,2]
+slowloris = [95,2,1,0,2,0]
+print(f"H(normal)    = {entropy(normal):.3f} bits")
+print(f"H(SlowLoris) = {entropy(slowloris):.3f} bits")</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>entropy &lt;- function(counts) {
+  p &lt;- counts[counts &gt; 0]
+  p &lt;- p / sum(p)
+  -sum(p * log2(p))
+}
+
+normal    &lt;- c(50,25,10,5,8,2)
+slowloris &lt;- c(95,2,1,0,2,0)
+sprintf("H(normal)    = %.3f bits", entropy(normal))
+sprintf("H(SlowLoris) = %.3f bits", entropy(slowloris))</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+$H_{\text{normal}} \approx 1.94$ bits; $H_{\text{SlowLoris}} \approx 0.47$ bits.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+<span class="ref" data-ref="v_slowloris">SlowLoris</span> hammers one method with many slow connections. Only the distribution differs, not the volume. Low $H$ is the signature.
+</div>
+</div>
+</div>
+</div>
+
+<!-- LESSON 13 -->
+<div class="lesson" data-lesson="13">
+<div class="lesson-title">Lesson 13 — Two-Proportion Test</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>Before/after comparison of <span class="ref" data-ref="v_block_rate">block rates</span>.</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data</span>
+<p><span class="ref" data-ref="v_old_fw">Old firewall</span>: 1,200 attempts, 1,080 blocked. <span class="ref" data-ref="v_new_fw">New firewall</span>: 1,500 attempts, 1,410 blocked.</p>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<div class="code-wrap lang-python">
+<pre>from statsmodels.stats.proportion import proportions_ztest
+import numpy as np
+
+counts = [1080, 1410]
+nobs   = [1200, 1500]
+z, p = proportions_ztest(counts, nobs)
+print(f"z = {z:.3f}, p = {p:.6f}")
+
+p1, p2 = 1080/1200, 1410/1500
+se = ((p1*(1-p1)/1200) + (p2*(1-p2)/1500))**0.5
+diff = p1 - p2
+print(f"diff = {diff*100:.1f} pp, 95% CI = "
+      f"({(diff-1.96*se)*100:.1f}, {(diff+1.96*se)*100:.1f}) pp")</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>counts &lt;- c(1080, 1410)
+nobs   &lt;- c(1200, 1500)
+
+prop.test(counts, nobs, correct = FALSE)
+
+p1 &lt;- 1080/1200; p2 &lt;- 1410/1500
+se &lt;- sqrt(p1*(1-p1)/1200 + p2*(1-p2)/1500)
+sprintf("diff = %.1f pp, 95%% CI = (%.1f, %.1f) pp",
+        (p1-p2)*100, (p1-p2-1.96*se)*100, (p1-p2+1.96*se)*100)</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+$z = -4.02$, $p \approx 6 \times 10^{-5}$. Block-rate difference $= +4.0$ percentage points, 95% CI $(2.0,\, 6.0)$ pp.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+Report absolute, not relative, change. The test does not measure <span class="ref" data-ref="v_false_positive">false positives</span>.
+</div>
+</div>
+</div>
+</div>
+
+<!-- LESSON 14 -->
+<div class="lesson" data-lesson="14">
+<div class="lesson-title">Lesson 14 — ROC Curves and AUC</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>See <span class="ref" data-ref="fawcettROC">Fawcett (2006)</span>.</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data (10 flows)</span>
+<table class="data-table">
+<tr><th>Flow</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
+<tr><th><span class="ref" data-ref="v_score">Score</span></th><td>0.95</td><td>0.88</td><td>0.82</td><td>0.71</td><td>0.65</td><td>0.55</td><td>0.48</td><td>0.35</td><td>0.22</td><td>0.10</td></tr>
+<tr><th><span class="ref" data-ref="v_label">Attack?</span></th><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+</table>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<div class="code-wrap lang-python">
+<pre>from sklearn.metrics import roc_auc_score
+
+scores = [0.95,0.88,0.82,0.71,0.65,0.55,0.48,0.35,0.22,0.10]
+labels = [1,1,1,1,0,1,0,0,0,0]
+
+print(f"AUC = {roc_auc_score(labels, scores):.3f}")
+
+for thr in [0.5, 0.7]:
+    preds = [1 if s >= thr else 0 for s in scores]
+    tp = sum(p and l for p,l in zip(preds,labels))
+    fp = sum(p and not l for p,l in zip(preds,labels))
+    fn = sum((not p) and l for p,l in zip(preds,labels))
+    print(f"thr={thr}: TP={tp}, FP={fp}, FN={fn}, "
+          f"precision={tp/(tp+fp):.2f}, recall={tp/(tp+fn):.2f}")</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>scores &lt;- c(0.95,0.88,0.82,0.71,0.65,0.55,0.48,0.35,0.22,0.10)
+labels &lt;- c(1,1,1,1,0,1,0,0,0,0)
+
+auc &lt;- (sum(rank(scores)[labels == 1]) - sum(labels) * (sum(labels)+1)/2) /
+       (sum(labels) * (length(labels) - sum(labels)))
+cat(sprintf("AUC = %.3f\n", auc))
+
+for (thr in c(0.5, 0.7)) {
+  preds &lt;- as.integer(scores &gt;= thr)
+  tp &lt;- sum(preds == 1 &amp; labels == 1)
+  fp &lt;- sum(preds == 1 &amp; labels == 0)
+  fn &lt;- sum(preds == 0 &amp; labels == 1)
+  cat(sprintf("thr=%.1f: TP=%d, FP=%d, FN=%d, precision=%.2f, recall=%.2f\n",
+              thr, tp, fp, fn, tp/(tp+fp), tp/(tp+fn)))
+}</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+$\mathrm{AUC} = 0.800$. At threshold $0.5$: $\text{recall} = 1.00$, $\text{precision} = 0.83$. At threshold $0.7$: $\text{precision} = 1.00$, $\text{recall} = 0.80$.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+$\mathrm{AUC} = 0.8$ means a random attack is scored higher than a random normal flow with probability $0.8$. With 10 flows, AUC is noisy.
+</div>
+</div>
+</div>
+</div>
+
+<!-- LESSON 15 -->
+<div class="lesson" data-lesson="15">
+<div class="lesson-title">Lesson 15 — Logistic Regression</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>Interpretable baseline for IDS; teaches <span class="ref" data-ref="v_odds_ratio">odds ratios</span>. See <span class="ref" data-ref="hosmerLogistic">Hosmer et al.</span></p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data (12 flows)</span>
+<table class="data-table">
+<tr><th>Flow</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td></tr>
+<tr><th><span class="ref" data-ref="v_payload">Payload (KB)</span></th><td>1.2</td><td>0.8</td><td>2.5</td><td>3.1</td><td>0.5</td><td>4.0</td><td>1.5</td><td>2.8</td><td>0.9</td><td>3.5</td><td>1.1</td><td>2.2</td></tr>
+<tr><th><span class="ref" data-ref="v_duration">Duration (s)</span></th><td>2</td><td>1</td><td>10</td><td>15</td><td>1</td><td>20</td><td>3</td><td>12</td><td>2</td><td>18</td><td>2</td><td>8</td></tr>
+<tr><th><span class="ref" data-ref="v_malicious">Malicious?</span></th><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+</table>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<div class="code-wrap lang-python">
+<pre>import numpy as np
+import statsmodels.api as sm
+
+x1 = [1.2,0.8,2.5,3.1,0.5,4.0,1.5,2.8,0.9,3.5,1.1,2.2]
+x2 = [2,1,10,15,1,20,3,12,2,18,2,8]
+y  = [0,0,1,1,0,1,0,1,0,1,0,0]
+
+X = sm.add_constant(np.column_stack([x1, x2]))
+model = sm.Logit(y, X).fit(disp=0)
+print(model.summary())
+print("Odds ratios:", np.exp(model.params))</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>x1 &lt;- c(1.2,0.8,2.5,3.1,0.5,4.0,1.5,2.8,0.9,3.5,1.1,2.2)
+x2 &lt;- c(2,1,10,15,1,20,3,12,2,18,2,8)
+y  &lt;- c(0,0,1,1,0,1,0,1,0,1,0,0)
+
+fit &lt;- glm(y ~ x1 + x2, family = binomial)
+summary(fit)
+exp(coef(fit))</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+$\operatorname{logit}(\Pr(\text{malicious})) = -6.8 + 1.9\,x_1 + 0.28\,x_2$. Odds ratio $\exp(1.9) \approx 6.7$ for <span class="ref" data-ref="v_payload">payload</span>, $\exp(0.28) \approx 1.32$ for <span class="ref" data-ref="v_duration">duration</span>.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+Each extra KB of payload multiplies the odds of being malicious by $\approx 6.7$, holding <span class="ref" data-ref="v_duration">duration</span> constant. Odds ratios are multiplicative. With 12 rows, estimates are unstable.
+</div>
+</div>
+</div>
+</div>
+
+<!-- LESSON 16 -->
+<div class="lesson" data-lesson="16">
+<div class="lesson-title">Lesson 16 — Poisson Model for Attack Arrivals</div>
+<div class="lesson-body">
+<div class="step">
+<span class="step-label data">Engineering Context</span>
+<p>SOC capacity planning.</p>
+</div>
+<div class="step">
+<span class="step-label data">Fake Data (<span class="ref" data-ref="v_attacks_per_hour">attacks/hour</span>, 20 hours)</span>
+<p style="font-family:monospace;font-size:0.85rem;">3, 5, 2, 4, 6, 3, 4, 5, 2, 3, 7, 4, 3, 5, 4, 2, 6, 3, 4, 5</p>
+<p>Mean <span class="ref" data-ref="v_lambda">$\hat{\lambda}$</span> $= 4.0$ attacks/hour.</p>
+</div>
+<div class="step">
+<span class="step-label compute">The Computation</span>
+<div class="code-wrap lang-python">
+<pre>from scipy.stats import poisson
+import numpy as np
+
+lam = 4.0
+print(f"P(X <= 4) = {poisson.cdf(4, lam):.3f}")
+print(f"P(X > 8)  = {1 - poisson.cdf(8, lam):.3f}")
+print(f"P(X > 10) = {1 - poisson.cdf(10, lam):.3f}")
+
+obs = [3,5,2,4,6,3,4,5,2,3,7,4,3,5,4,2,6,3,4,5]
+observed = np.bincount(obs)
+k = np.arange(len(observed))
+expected = 20 * poisson.pmf(k, lam)
+print("observed:", observed[:8])
+print("expected:", np.round(expected[:8], 1))</pre>
+</div>
+<div class="code-wrap lang-r">
+<pre>lam &lt;- 4.0
+ppois(4, lam)
+1 - ppois(8, lam)
+1 - ppois(10, lam)
+
+obs &lt;- c(3,5,2,4,6,3,4,5,2,3,7,4,3,5,4,2,6,3,4,5)
+observed &lt;- as.integer(table(factor(obs, levels = 0:max(obs))))
+k        &lt;- 0:max(obs)
+expected &lt;- 20 * dpois(k, lam)
+data.frame(k, observed, expected = round(expected, 1))</pre>
+</div>
+</div>
+<div class="step">
+<span class="step-label result">Result</span>
+<div class="result-box">
+$\hat{\lambda} = 4.0$ per hour. $\Pr(X \le 4) = 0.63$; $\Pr(X > 8) = 0.021$. Capacity for 8 attacks/hour covers $\approx 98\%$ of hours.
+</div>
+</div>
+<div class="step">
+<span class="step-label interpret">How to Interpret (Domain)</span>
+<div class="interpret-box">
+Poisson assumes independent events at a constant rate $\lambda$. Real attacks are bursty, so the model <strong>under-estimates</strong> extreme hours ($\Pr(X > 10) \approx 0.003$ under the model, much higher in practice).
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<footer>
+<p><strong>About the data:</strong> All datasets are synthetic.</p>
+<p><strong>Variables:</strong> Every column header in every dataset table is a popup. Hover or tap to see the full name, units, and measurement background.</p>
+<p><strong>Math:</strong> Rendered from LaTeX via MathJax. Inline math uses <code>$...$</code>; display math uses <code>$$...$$</code>.</p>
+<p><strong>Python prerequisites:</strong> On Posit Cloud, run <code>pip install numpy scipy matplotlib statsmodels scikit-learn</code> once in the Terminal before knitting a Python report.</p>
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="ref-popup" role="tooltip" aria-hidden="true">
+<button type="button" class="ref-close" aria-label="Close">×</button>
+<div class="ref-title"></div>
+<div class="ref-meta"></div>
+<div class="ref-body"></div>
+<a class="ref-link" target="_blank" rel="noopener">Open source ↗</a>
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    var langButtons = document.querySelectorAll('.lang-bar button[data-lang]');
+    function setLang(lang) {
+        document.body.classList.remove('lang-python', 'lang-r');
+        document.body.classList.add('lang-' + lang);
+        langButtons.forEach(function (b) {
+            b.classList.toggle('active', b.dataset.lang === lang);
+        });
+        try { localStorage.setItem('teachStatLang', lang); } catch (e) {}
+    }
+    langButtons.forEach(function (b) {
+        b.addEventListener('click', function () { setLang(b.dataset.lang); });
+    });
+    try {
+        var saved = localStorage.getItem('teachStatLang');
+        if (saved === 'r' || saved === 'python') setLang(saved);
+    } catch (e) {}
+
+    var toastEl = document.getElementById('toast');
+    var toastTimer = null;
+    function showToast(msg, ms) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, ms || 2600);
+    }
+
+    function copyText(text, onSuccess, onFail) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text)
+                .then(function () { onSuccess && onSuccess(); })
+                .catch(function () { fallbackCopy(text, onSuccess, onFail); });
+        } else {
+            fallbackCopy(text, onSuccess, onFail);
+        }
+    }
+    function fallbackCopy(text, onSuccess, onFail) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        if (ok && onSuccess) onSuccess();
+        else if (!ok && onFail) onFail();
+    }
+
+    var COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+    var CHECK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+
+    document.querySelectorAll('.code-wrap').forEach(function (wrap) {
+        var pre = wrap.querySelector('pre');
+        if (!pre) return;
+        var blockIsPython = wrap.classList.contains('lang-python');
+
+        var actions = document.createElement('div');
+        actions.className = 'code-actions';
+
+        var copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.className = 'copy-btn';
+        copyBtn.setAttribute('aria-label', 'Copy code');
+        copyBtn.title = 'Copy code';
+        copyBtn.innerHTML = COPY_ICON;
+        copyBtn.addEventListener('click', function () {
+            copyText(pre.innerText, function () {
+                copyBtn.classList.add('copied');
+                copyBtn.innerHTML = CHECK_ICON;
+                showToast('Code copied');
+                setTimeout(function () {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.innerHTML = COPY_ICON;
+                }, 1400);
+            }, function () { showToast('Copy failed — select manually'); });
+        });
+
+        var runBtn = document.createElement('button');
+        runBtn.type = 'button';
+        runBtn.textContent = '▶ Run';
+        runBtn.title = 'Copy code and open mycompiler.io';
+        runBtn.addEventListener('click', function () {
+            var win = window.open('https://www.mycompiler.io/', '_blank', 'noopener');
+            copyText(pre.innerText, function () {
+                showToast('Code copied. mycompiler.io opened — paste and run.', 3500);
+            }, function () {
+                showToast('mycompiler.io opened. Please copy manually.', 3500);
+            });
+            if (!win) showToast('Popup blocked — allow popups for this page.', 3500);
+        });
+
+        var repBtn = document.createElement('button');
+        repBtn.type = 'button';
+        repBtn.textContent = '📄 Report';
+        repBtn.title = blockIsPython
+            ? 'Copy the Python-only .Rmd for this block and open Posit Cloud'
+            : 'Copy the R-only .Rmd for this block and open Posit Cloud';
+        repBtn.addEventListener('click', function () {
+            var lesson = wrap.closest('.lesson');
+            var lessonId = lesson ? lesson.dataset.lesson : null;
+            var rmd;
+            try {
+                rmd = buildReport(lessonId, blockIsPython ? 'python' : 'r');
+            } catch (err) {
+                showToast('Report failed: ' + err.message, 5000);
+                return;
+            }
+            var win = window.open('https://posit.cloud/', '_blank', 'noopener');
+            copyText(rmd, function () {
+                showToast('Lesson-specific .Rmd (' + (blockIsPython ? 'Python only' : 'R only') +
+                          ') copied! Posit Cloud: File → New File → R Markdown → paste → Knit.',
+                          6500);
+            }, function () {
+                showToast('Posit Cloud opened. Please copy the .Rmd manually.', 6500);
+            });
+            if (!win) showToast('Popup blocked — allow popups for this page.', 3500);
+        });
+
+        actions.appendChild(copyBtn);
+        actions.appendChild(runBtn);
+        actions.appendChild(repBtn);
+        wrap.appendChild(actions);
+    });
+
+    var LESSON_RMD = {
+        '1': {
+            title: 'Lesson 1 — Simple Linear Regression',
+            python: [
+                'import numpy as np',
+                '',
+                'x = np.array([2,3,5,7,8,10,12,14,15,18,20,22])',
+                'y = np.array([5,7,9,11,14,15,18,19,22,24,27,28])',
+                '',
+                'b1, b0 = np.polyfit(x, y, 1)',
+                'print(f"slope b1 = {b1:.3f}, intercept b0 = {b0:.3f}")',
+                '',
+                'r = np.corrcoef(x, y)[0, 1]',
+                'print(f"r = {r:.3f}, R^2 = {r**2:.3f}")',
+                '',
+                'print("Prediction for 10 KLOC:", b0 + b1 * 10)'
+            ].join('\n'),
+            r: [
+                'x <- c(2,3,5,7,8,10,12,14,15,18,20,22)',
+                'y <- c(5,7,9,11,14,15,18,19,22,24,27,28)',
+                '',
+                'fit <- lm(y ~ x)',
+                'coef(fit)',
+                'summary(fit)$r.squared',
+                'cor(x, y)',
+                '',
+                'predict(fit, newdata = data.frame(x = 10))'
+            ].join('\n'),
+            interpretation: 'Slope b1 = 1.18: each additional KLOC adds about 1.2 test hours. Intercept b0 = 2.51: fixed setup overhead. R^2 = 0.988 is high because the data are synthetic; real ISBSG or COCOMO data give R^2 = 0.3 to 0.7.',
+            exercise: '1. Change the prediction target from 10 KLOC to 25 KLOC. What is the new point estimate?\n2. Add one noisy observation (KLOC = 10, hours = 25) and refit. How much does the slope move?\n3. Write one paragraph interpreting the slope for a project manager.'
+        },
+        '2': {
+            title: 'Lesson 2 — Multiple Regression',
+            python: [
+                'import numpy as np',
+                'import statsmodels.api as sm',
+                '',
+                'x1 = np.array([80,85,90,75,95,88,82,70,92,86])',
+                'x2 = np.array([70,75,80,65,88,78,72,60,85,77])',
+                'y  = np.array([120,135,150,105,170,145,128,95,160,140])',
+                '',
+                'X = sm.add_constant(np.column_stack([x1, x2]))',
+                'model = sm.OLS(y, X).fit()',
+                'print(model.summary())',
+                '',
+                'print("Prediction:", model.predict([[1, 85, 75]]))',
+                'print("Correlation:", np.corrcoef(x1, x2)[0, 1])'
+            ].join('\n'),
+            r: [
+                'x1 <- c(80,85,90,75,95,88,82,70,92,86)',
+                'x2 <- c(70,75,80,65,88,78,72,60,85,77)',
+                'y  <- c(120,135,150,105,170,145,128,95,160,140)',
+                '',
+                'fit <- lm(y ~ x1 + x2)',
+                'summary(fit)',
+                'confint(fit)',
+                '',
+                'predict(fit, newdata = data.frame(x1 = 85, x2 = 75),',
+                '        interval = "confidence")',
+                'cor(x1, x2)'
+            ].join('\n'),
+            interpretation: 'Coefficients are partial effects: the change in fee per unit increase in an indicator, holding the other constant. The negative intercept is an extrapolation artifact.',
+            exercise: '1. Add a third predictor and check if R-squared moves.\n2. Compute the correlation matrix of predictors.\n3. Explain the intercept for a stakeholder.'
+        },
+        '3': {
+            title: 'Lesson 3 — Correlation and Feature Selection',
+            python: [
+                'from scipy.stats import pearsonr, spearmanr',
+                '',
+                'complexity = [12,20,8,30,18,25,10,35]',
+                'kloc       = [3,6,2,9,5,8,2.5,10]',
+                'comment    = [18,10,25,8,14,6,22,5]',
+                'defects    = [2,5,1,8,4,7,2,10]',
+                '',
+                'for name, feat in [("complexity", complexity),',
+                '                   ("KLOC", kloc),',
+                '                   ("comment_density", comment)]:',
+                '    r, p   = pearsonr(feat, defects)',
+                '    rs, ps = spearmanr(feat, defects)',
+                '    print(f"{name:18s} Pearson r={r:.3f}  Spearman rho={rs:.3f}")'
+            ].join('\n'),
+            r: [
+                'complexity <- c(12,20,8,30,18,25,10,35)',
+                'kloc       <- c(3,6,2,9,5,8,2.5,10)',
+                'comment    <- c(18,10,25,8,14,6,22,5)',
+                'defects    <- c(2,5,1,8,4,7,2,10)',
+                '',
+                'for (nm in c("complexity","kloc","comment")) {',
+                '  feat <- get(nm)',
+                '  cat(sprintf("%-12s Pearson r=%.3f  Spearman rho=%.3f\\n",',
+                '              nm,',
+                '              cor(feat, defects, method="pearson"),',
+                '              cor(feat, defects, method="spearman")))',
+                '}',
+                'pairs(data.frame(complexity, kloc, comment, defects))'
+            ].join('\n'),
+            interpretation: 'Pearson measures linear association; Spearman captures monotone relationships. Use correlation to screen features, then confirm with regression. Correlation is not causation.',
+            exercise: '1. Add a fourth feature and compute correlations.\n2. Which feature would you drop first and why?\n3. Write a short recommendation memo.'
+        },
+        '4': {
+            title: 'Lesson 4 — Two-Sample t-Test',
+            python: [
+                'from scipy.stats import ttest_ind',
+                'import numpy as np',
+                '',
+                'old = [4.2,5.1,3.8,4.9,5.5,4.1,4.7,5.0]',
+                'new = [3.1,3.5,2.9,3.8,3.2,2.7,3.6,3.0]',
+                '',
+                't, p = ttest_ind(old, new, equal_var=False)',
+                'print(f"t = {t:.3f}, p = {p:.5f}")',
+                '',
+                'diff = np.mean(old) - np.mean(new)',
+                'se   = np.sqrt(np.var(old, ddof=1)/8 + np.var(new, ddof=1)/8)',
+                'print(f"mean diff = {diff:.2f}, 95% CI = "',
+                '      f"({diff-2.16*se:.2f}, {diff+2.16*se:.2f})")'
+            ].join('\n'),
+            r: [
+                'old <- c(4.2,5.1,3.8,4.9,5.5,4.1,4.7,5.0)',
+                'new <- c(3.1,3.5,2.9,3.8,3.2,2.7,3.6,3.0)',
+                '',
+                't.test(old, new, var.equal = FALSE)',
+                '',
+                'boxplot(list(old = old, new = new),',
+                '        col = c("lightgray", "lightblue"),',
+                '        ylab = "Defects per KLOC")'
+            ].join('\n'),
+            interpretation: 'Welch t-test: mean difference is about 1.46 defects/KLOC with 95% CI (1.03, 1.90). Statistical significance is not practical significance. Not a randomized experiment.',
+            exercise: '1. Compare Student and Welch versions of the test.\n2. What sample size gives a 95% CI of width 0.5?\n3. List two threats to validity.'
+        },
+        '5': {
+            title: 'Lesson 5 — Confidence Interval for Mean Fix Time',
+            python: [
+                'import numpy as np',
+                'from scipy import stats',
+                '',
+                'data = [6.2,7.8,5.5,8.1,9.0,6.9,7.2,8.5,6.0,7.7,8.9,5.8,7.4,8.2,6.6]',
+                'n = len(data)',
+                'xbar = np.mean(data)',
+                's = np.std(data, ddof=1)',
+                'se = s / np.sqrt(n)',
+                'tcrit = stats.t.ppf(0.975, df=n-1)',
+                'print(f"mean = {xbar:.2f}, s = {s:.2f}, SE = {se:.3f}")',
+                'print(f"95% CI = ({xbar - tcrit*se:.2f}, {xbar + tcrit*se:.2f})")'
+            ].join('\n'),
+            r: [
+                'data <- c(6.2,7.8,5.5,8.1,9.0,6.9,7.2,8.5,6.0,7.7,8.9,5.8,7.4,8.2,6.6)',
+                '',
+                'mean(data); sd(data)',
+                't.test(data)$conf.int',
+                '',
+                'hist(data, breaks = 6, col = "lightblue",',
+                '     xlab = "Fix time (hours)")'
+            ].join('\n'),
+            interpretation: 'The 95% CI is a range for the true mean, not for individual fix times. If the SLA is under 8 hours, 7.89 is barely compliant. CI width shrinks with sqrt(n); halving it needs four times the data.',
+            exercise: '1. Recompute at 90% and 99%. How does width change?\n2. What is the 95% prediction interval for a single fix?\n3. Write the frequentist interpretation in one sentence.'
+        },
+        '6': {
+            title: 'Lesson 6 — Laplace Test',
+            python: [
+                'import numpy as np',
+                '',
+                'def laplace(times, T):',
+                '    times = np.asarray(times)',
+                '    n = len(times)',
+                '    return (times.mean() - T/2) / (T * np.sqrt(1/(12*n)))',
+                '',
+                'A = [5,12,18,30,45,62,85,110,150,200]',
+                'B = [5,8,12,15,18,22,25,28,32,35]',
+                'print(f"System A: U = {laplace(A, 200):.3f}")',
+                'print(f"System B: U = {laplace(B,  35):.3f}")'
+            ].join('\n'),
+            r: [
+                'laplace <- function(times, T) {',
+                '  n <- length(times)',
+                '  (mean(times) - T/2) / (T * sqrt(1/(12*n)))',
+                '}',
+                '',
+                'A <- c(5,12,18,30,45,62,85,110,150,200)',
+                'B <- c(5,8,12,15,18,22,25,28,32,35)',
+                'cat("System A: U =", round(laplace(A, 200), 3), "\\n")',
+                'cat("System B: U =", round(laplace(B,  35), 3), "\\n")'
+            ].join('\n'),
+            interpretation: 'Negative U means failures arrive later than expected (improvement). Positive U means deterioration. Values outside [-2, +2] flag instability.',
+            exercise: '1. Plot failure index vs time for each system.\n2. What does U = 0 mean?\n3. Which system would you trust with a release decision?'
+        },
+        '7': {
+            title: 'Lesson 7 — Goel-Okumoto Reliability Growth Model',
+            python: [
+                'import numpy as np',
+                'from scipy.optimize import curve_fit',
+                '',
+                't = np.array([1,2,3,4,5,6,7,8])',
+                'm = np.array([4,11,22,35,48,60,70,78])',
+                '',
+                'def go(t, a, b):',
+                '    return a * (1 - np.exp(-b * t))',
+                '',
+                'popt, pcov = curve_fit(go, t, m, p0=[100, 0.3])',
+                'a, b = popt',
+                'perr = np.sqrt(np.diag(pcov))',
+                'print(f"a = {a:.1f} +/- {perr[0]:.1f}")',
+                'print(f"b = {b:.3f} +/- {perr[1]:.3f}")'
+            ].join('\n'),
+            r: [
+                't <- 1:8',
+                'm <- c(4,11,22,35,48,60,70,78)',
+                '',
+                'fit <- nls(m ~ a * (1 - exp(-b * t)),',
+                '           start = list(a = 100, b = 0.3))',
+                'summary(fit)$coefficients',
+                '',
+                'plot(t, m, pch = 19, col = "steelblue")',
+                'lines(seq(1, 8, length.out = 100),',
+                '      coef(fit)["a"] * (1 - exp(-coef(fit)["b"] * seq(1, 8, length.out = 100))),',
+                '      col = "firebrick", lwd = 2)'
+            ].join('\n'),
+            interpretation: 'Parameter a is the expected total number of defects; b is the detection rate. If data are S-shaped rather than concave, the exponential form under-predicts.',
+            exercise: '1. Add two more weeks and refit.\n2. Compare to a linear model.\n3. Write a release recommendation.'
+        },
+        '8': {
+            title: 'Lesson 8 — Binomial Confidence and the Rule of Three',
+            python: [
+                'from scipy.stats import beta',
+                '',
+                'n = 30',
+                'print(f"Exact 95% upper bound: {beta.ppf(0.95, 1, n):.4f}")',
+                'print(f"Rule of three: 3/{n} = {3/n:.4f}")',
+                '',
+                'for k in [10, 30, 100, 300, 1000]:',
+                '    print(f"n={k:4d}  upper = {beta.ppf(0.95, 1, k):.4f}")'
+            ].join('\n'),
+            r: [
+                'n <- 30',
+                'qbeta(0.95, 1, n)',
+                '3/n',
+                '',
+                'n_grid <- c(10, 30, 100, 300, 1000)',
+                'data.frame(n = n_grid,',
+                '           exact = qbeta(0.95, 1, n_grid),',
+                '           rule_of_three = 3 / n_grid)'
+            ].join('\n'),
+            interpretation: 'With 0 failures in 30 trials, the 95% upper bound is about 9.5%. To certify below 1%, need about 300 failure-free trials. Certification confidence is expensive.',
+            exercise: '1. Build a table of required n for p in {5%, 1%, 0.1%}.\n2. What if one failure occurs in 30 trials?\n3. Discuss the independence assumption.'
+        },
+        '9': {
+            title: 'Lesson 9 — Bayesian Updating',
+            python: [
+                'from scipy.stats import beta',
+                '',
+                'a0, b0 = 2, 18',
+                'fails, passes = 3, 37',
+                '',
+                'a1, b1 = a0 + fails, b0 + passes',
+                'print(f"Prior mean     = {a0/(a0+b0):.3f}")',
+                'print(f"Posterior mean = {a1/(a1+b1):.3f}")',
+                'lo, hi = beta.ppf([0.025, 0.975], a1, b1)',
+                'print(f"95% credible interval = ({lo:.3f}, {hi:.3f})")',
+                'print(f"MLE p = {fails/(fails+passes):.3f}")'
+            ].join('\n'),
+            r: [
+                'a0 <- 2; b0 <- 18',
+                'fails <- 3; passes <- 37',
+                '',
+                'a1 <- a0 + fails; b1 <- b0 + passes',
+                'a0/(a0+b0)',
+                'a1/(a1+b1)',
+                'qbeta(c(0.025, 0.975), a1, b1)',
+                'fails/(fails+passes)',
+                '',
+                'p <- seq(0, 0.4, length.out = 200)',
+                'plot(p, dbeta(p, a0, b0), type = "l", lwd = 2, col = "steelblue")',
+                'lines(p, dbeta(p, a1, b1), lwd = 2, col = "firebrick")'
+            ].join('\n'),
+            interpretation: 'The posterior is a compromise between prior and data. A 95% credible interval means given the model and prior, there is 95% posterior probability p lies in this range. Not the same as a confidence interval.',
+            exercise: '1. Compare posterior mean to MLE.\n2. Try a uniform prior.\n3. Explain credible vs confidence intervals.'
+        },
+        '10': {
+            title: 'Lesson 10 — Z-Score and IQR Outlier Detection',
+            python: [
+                'import numpy as np',
+                '',
+                'x = np.array([120,135,128,142,118,131,125,139,122,133,129,141,127,136,980])',
+                '',
+                'mu, sd = x.mean(), x.std(ddof=1)',
+                'print("z-scores:", np.round((x - mu) / sd, 2))',
+                '',
+                'q1, q3 = np.percentile(x, [25, 75])',
+                'iqr = q3 - q1',
+                'print(f"IQR = {iqr:.1f}, upper fence = {q3 + 1.5*iqr:.1f}")'
+            ].join('\n'),
+            r: [
+                'x <- c(120,135,128,142,118,131,125,139,122,133,129,141,127,136,980)',
+                '',
+                'round((x - mean(x)) / sd(x), 2)',
+                '',
+                'q <- quantile(x, c(0.25, 0.75))',
+                'iqr <- q[2] - q[1]',
+                'c(IQR = iqr, upper_fence = q[2] + 1.5 * iqr)',
+                'boxplot(x, col = "lightblue")'
+            ].join('\n'),
+            interpretation: 'Both methods flag window 15. The z-score assumes normality and is inflated by the outlier itself. The IQR rule is robust and distribution-free.',
+            exercise: '1. Remove window 15 and recompute.\n2. Which method to deploy in a high-volume SOC?\n3. Design a combined alerting rule.'
+        },
+        '11': {
+            title: 'Lesson 11 — Confusion Matrix and Classification Metrics',
+            python: [
+                'TP, FN, FP, TN = 35, 5, 45, 915',
+                '',
+                'accuracy  = (TP+TN)/(TP+TN+FP+FN)',
+                'precision = TP/(TP+FP)',
+                'recall    = TP/(TP+FN)',
+                'f1        = 2*precision*recall/(precision+recall)',
+                '',
+                'print(f"Accuracy  = {accuracy:.3f}")',
+                'print(f"Precision = {precision:.3f}")',
+                'print(f"Recall    = {recall:.3f}")',
+                'print(f"F1        = {f1:.3f}")',
+                '',
+                'baseline = (FN + TN) / (TP + FN + FP + TN)',
+                'print(f"Always-normal baseline = {baseline:.3f}")'
+            ].join('\n'),
+            r: [
+                'TP <- 35; FN <- 5; FP <- 45; TN <- 915',
+                '',
+                'accuracy  <- (TP+TN)/(TP+TN+FP+FN)',
+                'precision <- TP/(TP+FP)',
+                'recall    <- TP/(TP+FN)',
+                'f1        <- 2*precision*recall/(precision+recall)',
+                '',
+                'sprintf("Accuracy  = %.3f", accuracy)',
+                'sprintf("Precision = %.3f", precision)',
+                'sprintf("Recall    = %.3f", recall)',
+                'sprintf("F1        = %.3f", f1)',
+                '',
+                'baseline <- (FN + TN) / (TP + FN + FP + TN)',
+                'sprintf("Always-normal baseline = %.3f", baseline)'
+            ].join('\n'),
+            interpretation: '95% accuracy sounds excellent, but precision of 44% means most alerts are false alarms. The always-normal baseline gets 96% accuracy and catches zero attacks.',
+            exercise: '1. Recompute if FP drops to 20 with 2 more FN.\n2. Which metric for a hospital SOC?\n3. Explain why accuracy misleads.'
+        },
+        '12': {
+            title: 'Lesson 12 — Shannon Entropy',
+            python: [
+                'import numpy as np',
+                '',
+                'def entropy(counts):',
+                '    p = np.array(counts, dtype=float)',
+                '    p = p[p > 0]',
+                '    p = p / p.sum()',
+                '    return -(p * np.log2(p)).sum()',
+                '',
+                'normal    = [50,25,10,5,8,2]',
+                'slowloris = [95,2,1,0,2,0]',
+                'print(f"H(normal)    = {entropy(normal):.3f} bits")',
+                'print(f"H(SlowLoris) = {entropy(slowloris):.3f} bits")'
+            ].join('\n'),
+            r: [
+                'entropy <- function(counts) {',
+                '  p <- counts[counts > 0]',
+                '  p <- p / sum(p)',
+                '  -sum(p * log2(p))',
+                '}',
+                '',
+                'normal    <- c(50,25,10,5,8,2)',
+                'slowloris <- c(95,2,1,0,2,0)',
+                'sprintf("H(normal)    = %.3f bits", entropy(normal))',
+                'sprintf("H(SlowLoris) = %.3f bits", entropy(slowloris))'
+            ].join('\n'),
+            interpretation: 'Normal traffic entropy is about 1.94 bits; SlowLoris about 0.47 bits. Total request count may be similar; only the distribution differs.',
+            exercise: '1. Compute entropy of a mixed attack window.\n2. Propose a threshold.\n3. Why does entropy fail for volume-based DDoS?'
+        },
+        '13': {
+            title: 'Lesson 13 — Two-Proportion Test',
+            python: [
+                'from statsmodels.stats.proportion import proportions_ztest',
+                'import numpy as np',
+                '',
+                'counts = [1080, 1410]',
+                'nobs   = [1200, 1500]',
+                'z, p = proportions_ztest(counts, nobs)',
+                'print(f"z = {z:.3f}, p = {p:.6f}")',
+                '',
+                'p1, p2 = 1080/1200, 1410/1500',
+                'se = ((p1*(1-p1)/1200) + (p2*(1-p2)/1500))**0.5',
+                'diff = p1 - p2',
+                'print(f"diff = {diff*100:.1f} pp, 95% CI = "',
+                '      f"({(diff-1.96*se)*100:.1f}, {(diff+1.96*se)*100:.1f}) pp")'
+            ].join('\n'),
+            r: [
+                'counts <- c(1080, 1410)',
+                'nobs   <- c(1200, 1500)',
+                '',
+                'prop.test(counts, nobs, correct = FALSE)',
+                '',
+                'p1 <- 1080/1200; p2 <- 1410/1500',
+                'se <- sqrt(p1*(1-p1)/1200 + p2*(1-p2)/1500)',
+                'sprintf("diff = %.1f pp, 95%% CI = (%.1f, %.1f) pp",',
+                '        (p1-p2)*100, (p1-p2-1.96*se)*100, (p1-p2+1.96*se)*100)'
+            ].join('\n'),
+            interpretation: 'The new firewall blocks about 4 percentage points more; the CI excludes zero. Report absolute rather than relative change.',
+            exercise: '1. What if the new firewall blocks 30 legitimate flows?\n2. Compute relative improvement.\n3. What sample size gives width 1 pp?'
+        },
+        '14': {
+            title: 'Lesson 14 — ROC and AUC',
+            python: [
+                'from sklearn.metrics import roc_auc_score',
+                '',
+                'scores = [0.95,0.88,0.82,0.71,0.65,0.55,0.48,0.35,0.22,0.10]',
+                'labels = [1,1,1,1,0,1,0,0,0,0]',
+                '',
+                'print(f"AUC = {roc_auc_score(labels, scores):.3f}")',
+                '',
+                'for thr in [0.5, 0.7]:',
+                '    preds = [1 if s >= thr else 0 for s in scores]',
+                '    tp = sum(p and l for p,l in zip(preds,labels))',
+                '    fp = sum(p and not l for p,l in zip(preds,labels))',
+                '    fn = sum((not p) and l for p,l in zip(preds,labels))',
+                '    print(f"thr={thr}: TP={tp}, FP={fp}, FN={fn}, "',
+                '          f"precision={tp/(tp+fp):.2f}, recall={tp/(tp+fn):.2f}")'
+            ].join('\n'),
+            r: [
+                'scores <- c(0.95,0.88,0.82,0.71,0.65,0.55,0.48,0.35,0.22,0.10)',
+                'labels <- c(1,1,1,1,0,1,0,0,0,0)',
+                '',
+                'auc <- (sum(rank(scores)[labels == 1]) - sum(labels) * (sum(labels)+1)/2) /',
+                '       (sum(labels) * (length(labels) - sum(labels)))',
+                'cat(sprintf("AUC = %.3f\\n", auc))',
+                '',
+                'for (thr in c(0.5, 0.7)) {',
+                '  preds <- as.integer(scores >= thr)',
+                '  tp <- sum(preds == 1 & labels == 1)',
+                '  fp <- sum(preds == 1 & labels == 0)',
+                '  fn <- sum(preds == 0 & labels == 1)',
+                '  cat(sprintf("thr=%.1f: TP=%d, FP=%d, FN=%d, precision=%.2f, recall=%.2f\\n",',
+                '              thr, tp, fp, fn, tp/(tp+fp), tp/(tp+fn)))',
+                '}'
+            ].join('\n'),
+            interpretation: 'AUC is 0.800, threshold-free and useful for comparing models. Threshold choice is a business decision.',
+            exercise: '1. Compute FPR and TPR at each threshold.\n2. If a missed attack costs $50K and a false alarm $200, which threshold?\n3. Comment on sample size.'
+        },
+        '15': {
+            title: 'Lesson 15 — Logistic Regression',
+            python: [
+                'import numpy as np',
+                'import statsmodels.api as sm',
+                '',
+                'x1 = [1.2,0.8,2.5,3.1,0.5,4.0,1.5,2.8,0.9,3.5,1.1,2.2]',
+                'x2 = [2,1,10,15,1,20,3,12,2,18,2,8]',
+                'y  = [0,0,1,1,0,1,0,1,0,1,0,0]',
+                '',
+                'X = sm.add_constant(np.column_stack([x1, x2]))',
+                'model = sm.Logit(y, X).fit(disp=0)',
+                'print(model.summary())',
+                'print("Odds ratios:", np.exp(model.params))'
+            ].join('\n'),
+            r: [
+                'x1 <- c(1.2,0.8,2.5,3.1,0.5,4.0,1.5,2.8,0.9,3.5,1.1,2.2)',
+                'x2 <- c(2,1,10,15,1,20,3,12,2,18,2,8)',
+                'y  <- c(0,0,1,1,0,1,0,1,0,1,0,0)',
+                '',
+                'fit <- glm(y ~ x1 + x2, family = binomial)',
+                'summary(fit)',
+                'exp(coef(fit))'
+            ].join('\n'),
+            interpretation: 'Each extra KB of payload multiplies the odds of being malicious by about 6.7. Odds ratios are multiplicative. With 12 observations, estimates are unstable.',
+            exercise: '1. Convert an odds ratio to a probability statement.\n2. Add an interaction term.\n3. What does the intercept imply?'
+        },
+        '16': {
+            title: 'Lesson 16 — Poisson Model for Attack Arrivals',
+            python: [
+                'from scipy.stats import poisson',
+                'import numpy as np',
+                '',
+                'lam = 4.0',
+                'print(f"P(X <= 4) = {poisson.cdf(4, lam):.3f}")',
+                'print(f"P(X > 8)  = {1 - poisson.cdf(8, lam):.3f}")',
+                'print(f"P(X > 10) = {1 - poisson.cdf(10, lam):.3f}")',
+                '',
+                'obs = [3,5,2,4,6,3,4,5,2,3,7,4,3,5,4,2,6,3,4,5]',
+                'observed = np.bincount(obs)',
+                'k = np.arange(len(observed))',
+                'expected = 20 * poisson.pmf(k, lam)',
+                'print("observed:", observed[:8])',
+                'print("expected:", np.round(expected[:8], 1))'
+            ].join('\n'),
+            r: [
+                'lam <- 4.0',
+                'ppois(4, lam)',
+                '1 - ppois(8, lam)',
+                '1 - ppois(10, lam)',
+                '',
+                'obs <- c(3,5,2,4,6,3,4,5,2,3,7,4,3,5,4,2,6,3,4,5)',
+                'observed <- as.integer(table(factor(obs, levels = 0:max(obs))))',
+                'k        <- 0:max(obs)',
+                'expected <- 20 * dpois(k, lam)',
+                'data.frame(k, observed, expected = round(expected, 1))'
+            ].join('\n'),
+            interpretation: 'Poisson assumes independent events at a constant rate. Real attacks are bursty, so the model under-estimates extreme hours.',
+            exercise: '1. Fit a negative binomial and compare AIC.\n2. What staffing covers 99% of hours?\n3. List two diagnostics for overdispersion.'
+        }
+    };
+
+    function buildReport(lessonId, lang) {
+        var L = LESSON_RMD[String(lessonId)];
+        if (!L) throw new Error('No report template for lesson ' + lessonId);
+        var isPython = (lang === 'python');
+        var chunkLang = isPython ? 'python' : 'r';
+        var code = isPython ? L.python : L.r;
+
+        var yaml = [
+            '---',
+            'title: "' + L.title.replace(/"/g, '\\"') + '"',
+            'author: "Engineering Statistics Teaching Companion"',
+            'date: "`r Sys.Date()`"',
+            'output:',
+            '  html_document:',
+            '    toc: true',
+            '    toc_float: true',
+            '    theme: flatly',
+            '  pdf_document:',
+            '    toc: true',
+            '  word_document:',
+            '    toc: true',
+            '---',
+            ''
+        ].join('\n');
+
+        var setup = isPython
+            ? [
+                '```{python setup, include=FALSE}',
+                'import importlib.util',
+                'required = ["numpy", "scipy", "matplotlib"]',
+                'missing = [m for m in required if importlib.util.find_spec(m) is None]',
+                'if missing:',
+                '    raise ImportError(',
+                '        "Missing Python packages: " + ", ".join(missing) +',
+                '        ". In the Posit Cloud Terminal run: pip install " + " ".join(missing)',
+                '    )',
+                '```',
+                ''
+            ].join('\n')
+            : [
+                '```{r setup, include=FALSE}',
+                'knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)',
+                '```',
+                ''
+            ].join('\n');
+
+        var body = [
+            '## Code',
+            '',
+            '```{' + chunkLang + '}',
+            code,
+            '```',
+            '',
+            '## Interpretation',
+            '',
+            L.interpretation,
+            '',
+            '## Exercise',
+            '',
+            L.exercise,
+            ''
+        ].join('\n');
+
+        return yaml + setup + body;
+    }
+
+    var REFS = {
+        'cases1to5': { title: 'Cases 1–5 — Software effort estimation', meta: 'Companion case study document', body: 'Random-Search-tuned SVR, Taguchi-optimized ANN, Grey Wolf Optimization with DNNs, BERT-based estimation from requirements text, and heterogeneous ensembles.', link: '' },
+        'isbsg': { title: 'ISBSG — International Software Benchmarking Standards Group', meta: 'Industry dataset repository', body: 'Collects and publishes software project data for effort-estimation research and industry benchmarking.', link: 'https://www.isbsg.org/' },
+        'cocomo': { title: 'COCOMO — Constructive Cost Model', meta: 'Boehm (1981)', body: 'Barry Boehm’s parametric effort-estimation model. Recalibrated variants include COCOMO II and COCOMO2000.', link: '' },
+        'seiCase10': { title: 'SEI case study — Award-fee prediction', meta: 'Case 10 of the companion case study document', body: 'Monthly process indicators were used in a multiple regression to predict a contractor’s award fee. R² = 0.72. Cost variance was excluded, likely due to collinearity.', link: '' },
+        'idsFeatureSelection': { title: 'Case 18 — Feature selection for DDoS detection', meta: 'Case 18 of the companion case study document', body: 'Sequential Forward Floating Selection + KNN achieved 98.3% multiclass accuracy.', link: '' },
+        'welch': { title: 'Welch, B. L. (1947)', meta: 'Biometrika, 34(1–2), 28–35', body: 'Introduced the unequal-variance t-test. Avoids the equal-variance assumption of Student’s pooled t-test.', link: 'https://doi.org/10.1093/biomet/34.1-2.28' },
+        'studentT': { title: 'Student (1908) — The probable error of a mean', meta: 'Biometrika, 6(1), 1–25', body: 'Published under the pseudonym "Student" by William Sealy Gosset. Introduced the t-distribution and the small-sample confidence interval.', link: 'https://doi.org/10.1093/biomet/6.1.1' },
+        'laplaceCase': { title: 'Case 11 — Laplace test for reliability-growth stability', meta: 'Case 11 of the companion case study document', body: 'Twenty reliability datasets were checked. Values within [−2, +2] were acceptable; five datasets exceeded the bounds.', link: '' },
+        'laplaceRef': { title: 'Laplace, P.-S. (1820)', meta: 'Théorie analytique des probabilités', body: 'Originates the test now called the Laplace test: a score test for the null of a homogeneous Poisson process against a monotone trend.', link: '' },
+        'goCase13': { title: 'Case 13 — Goel–Okumoto model for release defect prediction', meta: 'Case 13 of the companion case study document', body: 'Goel–Okumoto SRGM fitted at weeks 10, 12, 14, 17, 20 on Release 1 with 134 total defects. Predictions stabilized around 129–139.', link: '' },
+        'goelOkumoto': { title: 'Goel, A. L., & Okumoto, K. (1979)', meta: 'IEEE Transactions on Reliability, R-28(3), 206–211', body: 'Introduced the exponential non-homogeneous Poisson process reliability-growth model: m(t) = a (1 − e^(−bt)).', link: 'https://doi.org/10.1109/TR.1979.5220566' },
+        'coverageCase16': { title: 'Case 16 — Statistical coverage designs', meta: 'Case 16 of the companion case study document', body: 'Statistical coverage designs for black-box conformance testing. The rule of three (n ≈ 3/p for zero failures) is the simplest quantitative argument for why certification confidence is expensive.', link: '' },
+        'ruleOfThree': { title: 'Hanley & Lippman-Hand (1983)', meta: 'JAMA, 249(13), 1743–1745', body: 'Popularized the "rule of three": if zero events occur in n independent trials, the 95% upper confidence bound on the event probability is about 3/n.', link: 'https://doi.org/10.1001/jama.1983.03330370053031' },
+        'bayesCase12': { title: 'Case 12 — Bayesian vs. MLE for reliability parameters', meta: 'Case 12 of the companion case study document', body: 'Bayesian estimation was computable at every data fraction (10%–90%), whereas MLE often failed until 90%.', link: '' },
+        'rfCase17': { title: 'Case 17 — Random Forest with ambiguous-data elimination', meta: 'Case 17 of the companion case study document', body: 'On KDD Cup99, a Random Forest eliminated ambiguous training samples, yielding 99.4% accuracy.', link: '' },
+        'tukeyIQR': { title: 'Tukey, J. W. (1977) — Exploratory Data Analysis', meta: 'Addison-Wesley', body: 'Introduced the box plot and the 1.5×IQR rule for flagging outliers, the robust alternative to the z-score rule.', link: '' },
+        'idsCasesAll': { title: 'Cases 17–20 — Machine-learning IDS case studies', meta: 'Companion case study document', body: 'Random Forest with ambiguous-data elimination (KDD Cup99), KNN with SFFS, GRU+RNN with six features, and entropy+port features for SlowLoris.', link: '' },
+        'sokolovaMetrics': { title: 'Sokolova & Lapalme (2009)', meta: 'Information Processing & Management, 45(4), 427–437', body: 'Systematic survey of accuracy, precision, recall, F-measure, and other metrics.', link: 'https://doi.org/10.1016/j.ipm.2009.03.002' },
+        'slowlorisCase20': { title: 'Case 20 — Entropy and port-count for SlowLoris', meta: 'Case 20 of the companion case study document', body: 'Used traffic entropy and number of distinct ports to separate SlowLoris from legitimate HTTP traffic with ~99.8% test accuracy.', link: '' },
+        'shannon1948': { title: 'Shannon, C. E. (1948)', meta: 'Bell System Technical Journal, 27(3), 379–423', body: 'The founding paper of information theory. Defines entropy H = −Σ pᵢ log₂ pᵢ.', link: 'https://doi.org/10.1002/j.1538-7305.1948.tb01338.x' },
+        'fawcettROC': { title: 'Fawcett, T. (2006)', meta: 'Pattern Recognition Letters, 27(8), 861–874', body: 'Standard introduction to ROC curves and AUC. Explains why AUC is threshold-free and how to choose an operating point.', link: 'https://doi.org/10.1016/j.patrec.2005.10.010' },
+        'hosmerLogistic': { title: 'Hosmer, Lemeshow & Sturdivant', meta: 'Applied Logistic Regression, Wiley, 3rd edition (2013)', body: 'Reference textbook for logistic regression: coefficient and odds-ratio interpretation, goodness-of-fit, and model diagnostics.', link: '' },
+
+        'v_kloc': { title: 'KLOC — Thousands of Lines of Code', meta: 'Variable: x', body: 'Module size in thousands of physical source lines. In Lesson 1, x = KLOC is the predictor. One KLOC = 1,000 lines. Training values range from 2 to 22 KLOC.', link: '' },
+        'v_test_hours': { title: 'Test hours', meta: 'Variable: y', body: 'Hours of QA staff time per module, from test planning through sign-off. In Lesson 1, y = test hours is the quantity being predicted. Training values range from 5 to 28 hours.', link: '' },
+        'v_erb': { title: 'ERB approval %', meta: 'Variable: x1', body: 'Percentage of Engineering Review Board approvals granted on first submission. Higher percentages indicate a smoother review process. In Lesson 2, x1 = ERB % is one predictor of award fee.', link: '' },
+        'v_closure': { title: 'Action-item closure %', meta: 'Variable: x2', body: 'Percentage of action items closed by their target date. Higher percentages indicate better follow-through. In Lesson 2, x2 = closure % is the second predictor of award fee.', link: '' },
+        'v_fee': { title: 'Award fee', meta: 'Variable: y, in $K', body: 'Contractor award fee in thousands of dollars. In Lesson 2, y = fee is the quantity being predicted.', link: '' },
+        'v_cost_variance': { title: 'Cost variance', meta: 'Variable: excluded from Lesson 2', body: 'The difference between budgeted and actual cost. In the SEI study (Case 10), cost variance was dropped from the final regression because it was collinear with other predictors — a teaching point about high R² not implying every predictor is useful.', link: '' },
+        'v_complexity': { title: 'Cyclomatic complexity', meta: 'Variable: predictor in Lesson 3', body: 'Number of independent paths through a module. Higher complexity means more branches to test and more opportunities for defects. In Lesson 3, complexity is positively correlated with defect count.', link: '' },
+        'v_comment': { title: 'Comment density %', meta: 'Variable: predictor in Lesson 3', body: 'Percentage of lines that are comments. In Lesson 3, comment density is strongly negatively correlated with defect count — but that correlation is not causation.', link: '' },
+        'v_defects': { title: 'Defects', meta: 'Variable: outcome in Lesson 3', body: 'Number of defects found in a module during testing. In Lesson 3, defects is the outcome we want to predict from complexity, KLOC, and comment density.', link: '' },
+        'v_defect_density': { title: 'Defects per KLOC', meta: 'Variable: outcome in Lesson 4', body: 'Number of defects per thousand lines of code. Normalizing by size lets you compare modules of different sizes on equal footing. In Lesson 4, defect density is compared before and after a code-review process change.', link: '' },
+        'v_old_process': { title: 'Old code-review process', meta: 'Group: before', body: 'Defect density measured under the original code-review process. In Lesson 4, the old-process group has 8 observations with a mean of about 4.7 defects/KLOC.', link: '' },
+        'v_new_process': { title: 'New code-review process', meta: 'Group: after', body: 'Defect density measured under the redesigned code-review process. In Lesson 4, the new-process group has 8 observations with a mean of about 3.2 defects/KLOC.', link: '' },
+        'v_fix_time': { title: 'Fix time (hours)', meta: 'Variable in Lesson 5', body: 'Time from bug report to fix verification, in hours. In Lesson 5, the 15 observed fix times have a mean of 7.25 hours and a 95% CI of (6.61, 7.89).', link: '' },
+        'v_sla': { title: 'SLA — Service Level Agreement', meta: 'Policy constraint in Lesson 5', body: 'The contractual limit on average fix time. If the SLA says "average under 8 hours," the 95% CI upper bound of 7.89 is barely compliant, which is the operational decision Lesson 5 highlights.', link: '' },
+        'v_failure_time': { title: 'Failure time (test hours)', meta: 'Variable in Lesson 6', body: 'The time (in test hours) at which each failure occurred. Sorting these times lets you test whether failures are arriving faster or slower over time. In Lesson 6, two systems with 10 failures each are compared via the Laplace U statistic.', link: '' },
+        'v_system_a': { title: 'System A — improving', meta: 'Group in Lesson 6', body: 'Failure times for a system whose failure rate is decreasing. Laplace U = −1.89, within the stability band [−2, +2].', link: '' },
+        'v_system_b': { title: 'System B — worsening', meta: 'Group in Lesson 6', body: 'Failure times for a system whose failure rate is increasing. Laplace U = +1.72, positive, which flags a possible regression or new test stress.', link: '' },
+        'v_cumulative': { title: 'Cumulative defects by week', meta: 'Variable in Lesson 7', body: 'Total defects found by the end of each test week. In Lesson 7, the Goel–Okumoto model estimates the eventual total a and the detection rate b from this curve.', link: '' },
+        'v_pps': { title: 'Packets per second', meta: 'Variable in Lesson 10', body: 'Network traffic volume measured in packets per second, aggregated per one-minute window. In Lesson 10, 15 windows are analyzed, one of which is a dramatic outlier at 980 packets/s.', link: '' },
+        'v_pred_attack': { title: 'Predicted attack', meta: 'Column in Lesson 11', body: 'The classifier’s positive prediction: it flagged the flow as an attack.', link: '' },
+        'v_pred_normal': { title: 'Predicted normal', meta: 'Column in Lesson 11', body: 'The classifier’s negative prediction: it did not flag the flow as an attack.', link: '' },
+        'v_actual_attack': { title: 'Actual attack', meta: 'Row in Lesson 11', body: 'Ground truth: the flow really was an attack (40 of 1,000 flows).', link: '' },
+        'v_actual_normal': { title: 'Actual normal', meta: 'Row in Lesson 11', body: 'Ground truth: the flow really was normal (960 of 1,000 flows).', link: '' },
+        'v_tp': { title: 'TP — True Positive', meta: 'Cell in Lesson 11', body: 'Predicted attack, actually attack. Correct detection. TP = 35.', link: '' },
+        'v_fn': { title: 'FN — False Negative', meta: 'Cell in Lesson 11', body: 'Predicted normal, actually attack. Missed attack. FN = 5.', link: '' },
+        'v_fp': { title: 'FP — False Positive', meta: 'Cell in Lesson 11', body: 'Predicted attack, actually normal. False alarm. FP = 45.', link: '' },
+        'v_tn': { title: 'TN — True Negative', meta: 'Cell in Lesson 11', body: 'Predicted normal, actually normal. Correct non-detection. TN = 915.', link: '' },
+        'v_precision': { title: 'Precision', meta: 'Metric in Lesson 11', body: 'TP / (TP + FP). Of the flows the classifier called attacks, what fraction really were. Precision = 35/80 = 0.438, which is why the SOC would see mostly false alarms.', link: '' },
+        'v_http_counts': { title: 'HTTP method counts', meta: 'Variable in Lesson 12', body: 'Number of GET, POST, PUT, DELETE, HEAD, and OPTIONS requests per one-minute window. Normal traffic uses a mix; SlowLoris hammers a single method.', link: '' },
+        'v_slowloris': { title: 'SlowLoris attack', meta: 'Threat in Lesson 12', body: 'A low-and-slow HTTP DoS attack that holds many partial connections open, sending one byte at a time. Volume-based detectors miss it because total bytes stay low; entropy captures it because traffic becomes uniform.', link: '' },
+        'v_block_rate': { title: 'Block rate', meta: 'Variable in Lesson 13', body: 'The fraction of malicious attempts the firewall successfully blocked. Old firewall: 1080/1200 = 90.0%. New firewall: 1410/1500 = 94.0%.', link: '' },
+        'v_old_fw': { title: 'Old firewall', meta: 'Group in Lesson 13', body: 'The pre-upgrade firewall. 1,200 attempts, 1,080 blocked, block rate 90.0%.', link: '' },
+        'v_new_fw': { title: 'New firewall', meta: 'Group in Lesson 13', body: 'The post-upgrade firewall. 1,500 attempts, 1,410 blocked, block rate 94.0%. The two-proportion test asks whether that 4-point gain is statistically significant.', link: '' },
+        'v_false_positive': { title: 'False positive', meta: 'Concept in Lesson 13', body: 'A legitimate flow that the firewall blocks. The two-proportion test on block rates does not measure false positives; that is a separate analysis.', link: '' },
+        'v_score': { title: 'Anomaly score', meta: 'Variable in Lesson 14', body: 'A continuous score between 0 and 1 indicating how strongly the classifier believes a flow is malicious. Higher = more suspicious. Thresholding this score gives the binary attack/normal prediction.', link: '' },
+        'v_label': { title: 'Attack label (ground truth)', meta: 'Variable in Lesson 14', body: '1 if the flow really was an attack, 0 if normal. Used to evaluate the classifier but not available in live traffic.', link: '' },
+        'v_payload': { title: 'Payload size (KB)', meta: 'Variable: x1 in Lesson 15', body: 'The size of the request body in kilobytes. Larger payloads are more suspicious because data exfiltration requires volume. In Lesson 15, each extra KB multiplies the odds of being malicious by about 6.7.', link: '' },
+        'v_duration': { title: 'Connection duration (s)', meta: 'Variable: x2 in Lesson 15', body: 'How long the connection stayed open, in seconds. Longer connections can indicate data staging or persistence. In Lesson 15, each extra second multiplies the odds of being malicious by about 1.32.', link: '' },
+        'v_malicious': { title: 'Malicious? (outcome)', meta: 'Variable: y in Lesson 15', body: 'Binary outcome: 1 if the flow was an attack, 0 if normal. Lesson 15 uses logistic regression to predict this from payload size and duration.', link: '' },
+        'v_odds_ratio': { title: 'Odds ratio', meta: 'Statistic in Lesson 15', body: 'exp(coefficient) from a logistic regression. An odds ratio of 6.7 means each unit increase in the predictor multiplies the odds of the outcome by 6.7, holding other predictors constant. Multiplicative, not additive.', link: '' },
+        'v_attacks_per_hour': { title: 'Attacks per hour', meta: 'Variable in Lesson 16', body: 'The count of attacks observed in each one-hour window. In Lesson 16, 20 hours are observed, with a mean of 4.0 attacks/hour.', link: '' },
+        'v_lambda': { title: 'λ (lambda)', meta: 'Parameter in Lesson 16', body: 'The rate parameter of a Poisson distribution: the expected number of events per unit time. Estimated as λ̂ = 4.0 attacks/hour in Lesson 16.', link: '' }
+    };
+
+    var popup = document.getElementById('ref-popup');
+    var popupTitle = popup.querySelector('.ref-title');
+    var popupMeta = popup.querySelector('.ref-meta');
+    var popupBody = popup.querySelector('.ref-body');
+    var popupLink = popup.querySelector('.ref-link');
+    var popupClose = popup.querySelector('.ref-close');
+    var activeRef = null;
+    var hideTimer = null;
+
+    function populatePopup(key) {
+        var ref = REFS[key];
+        if (!ref) return false;
+        popupTitle.textContent = ref.title;
+        popupMeta.textContent = ref.meta || '';
+        popupBody.textContent = ref.body || '';
+        if (ref.link) { popupLink.href = ref.link; popupLink.style.display = 'inline-block'; }
+        else { popupLink.style.display = 'none'; }
+        return true;
+    }
+    function positionPopup(el) {
+        var r = el.getBoundingClientRect();
+        var popupW = popup.offsetWidth || 320;
+        var scrollY = window.scrollY || window.pageYOffset;
+        var scrollX = window.scrollX || window.pageXOffset;
+        var top = r.bottom + scrollY + 8;
+        var left = r.left + scrollX;
+        if (left + popupW > scrollX + window.innerWidth - 12) left = scrollX + window.innerWidth - popupW - 12;
+        if (left < scrollX + 12) left = scrollX + 12;
+        popup.style.top = top + 'px';
+        popup.style.left = left + 'px';
+    }
+    function showPopup(el) {
+        if (!populatePopup(el.dataset.ref)) return;
+        activeRef = el;
+        popup.classList.add('visible');
+        popup.setAttribute('aria-hidden', 'false');
+        positionPopup(el);
+        clearTimeout(hideTimer);
+    }
+    function hidePopup() { popup.classList.remove('visible'); popup.setAttribute('aria-hidden', 'true'); activeRef = null; }
+    function scheduleHide() { clearTimeout(hideTimer); hideTimer = setTimeout(hidePopup, 250); }
+
+    document.querySelectorAll('.ref').forEach(function (el) {
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'button');
+        el.addEventListener('mouseenter', function () { showPopup(el); });
+        el.addEventListener('mouseleave', scheduleHide);
+        el.addEventListener('focus', function () { showPopup(el); });
+        el.addEventListener('blur', scheduleHide);
+        el.addEventListener('click', function (e) { e.preventDefault(); if (activeRef === el) hidePopup(); else showPopup(el); });
+        el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showPopup(el); } });
+    });
+
+    popup.addEventListener('mouseenter', function () { clearTimeout(hideTimer); });
+    popup.addEventListener('mouseleave', scheduleHide);
+    popupClose.addEventListener('click', hidePopup);
+    document.addEventListener('click', function (e) { if (!popup.contains(e.target) && !e.target.closest('.ref')) hidePopup(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hidePopup(); });
+    window.addEventListener('resize', function () { if (activeRef) positionPopup(activeRef); });
+    window.addEventListener('scroll', function () { if (activeRef) positionPopup(activeRef); }, { passive: true });
+
+})();
+</script>
+
+</body>
+</html>
